@@ -13,19 +13,6 @@ import { IMPACT_DEFAULTS, cellsNeeded } from './lib/impact.js';
 import PrintSheet from './ui/PrintSheet.jsx';
 import { EXAMPLES, Examples, Faq, Sent } from './ui/Extras.jsx';
 
-// The CRM is a separate chunk, opened at #crm.
-const Crm = lazy(() => import('./crm/Crm.jsx'));
-
-function useHash() {
-  const [hash, setHash] = useState(window.location.hash);
-  useEffect(() => {
-    const on = () => setHash(window.location.hash);
-    window.addEventListener('hashchange', on);
-    return () => window.removeEventListener('hashchange', on);
-  }, []);
-  return hash;
-}
-
 // The 3D scene is a separate chunk: the questions render before three.js arrives.
 const CellStage = lazy(() => import('./scene/CellStage.jsx'));
 
@@ -52,13 +39,6 @@ function initialState() {
 }
 
 export default function App() {
-  const hash = useHash();
-  if (hash === '#crm')
-    return (
-      <Suspense fallback={<p className="crm-loading">Se încarcă CRM-ul…</p>}>
-        <Crm />
-      </Suspense>
-    );
   return <Tool />;
 }
 

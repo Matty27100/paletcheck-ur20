@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
@@ -27,7 +28,8 @@ const jsonLd = [
 
 const structuredData = {
   name: 'structured-data',
-  transformIndexHtml(html) {
+  transformIndexHtml(html, ctx) {
+    if (ctx?.path?.includes('admin')) return html; // the owners' page stays unlisted
     const tags = jsonLd.map((d) => `<script type="application/ld+json">${JSON.stringify(d)}</script>`).join('\n    ');
     return html.replace('</head>', `    ${tags}\n  </head>`).replaceAll('%SITE_URL%', FACTS.site.url);
   },
@@ -60,9 +62,18 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,png,jpg,svg,woff2,txt}'],
+        navigateFallbackDenylist: [/\/admin\//], // the owners' page is its own document
         maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
       },
     }),
   ],
+  build: {
+    rollupOptions: {
+      input: {
+        main: fileURLToPath(new URL('./index.html', import.meta.url)),
+        admin: fileURLToPath(new URL('./admin/index.html', import.meta.url)),
+      },
+    },
+  },
   server: { host: true, port: 5173, strictPort: true },
 });

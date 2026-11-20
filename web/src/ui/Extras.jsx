@@ -58,9 +58,9 @@ export function Sent({ lead, duplicate, answers, title, onRestart }) {
           {status}
         </p>
       )}
-      <p className="fine">În prototip nu se trimite niciun e-mail; cererea apare în CRM-ul demo din acest browser.</p>
-      <a className="link" href="#crm">
-        Vezi cererea în CRM (demo)
+      <p className="fine">În prototip nu se trimite niciun e-mail; cererea apare în zona proprietarilor (/admin), în acest browser.</p>
+      <a className="link" href="admin/">
+        Vezi cererea în zona proprietarilor (demo)
       </a>
       <button type="button" className="link" onClick={onRestart}>
         Verifică altă linie
@@ -105,8 +105,8 @@ export function Examples({ onPick, onBack }) {
       <p className="fine">
         Pentru formularul de cerere: CUI fictiv valid 12345674, invalid 12345675. E-mail de test: test@fabrica-demo.ro.
       </p>
-      <a className="link" href="#crm">
-        CRM demo: cererile și pașii de follow-up
+      <a className="link" href="admin/">
+        Zona proprietarilor: CRM și follow-up (demo)
       </a>
     </div>
   );

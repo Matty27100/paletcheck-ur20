@@ -271,7 +271,7 @@ function LeadDetail({ lead, now, onChange, onClose }) {
   );
 }
 
-export default function Crm() {
+export default function Crm({ onSignOut }) {
   const now = useNow();
   const [leads, setLeads] = useState(loadLeads);
   const [filter, setFilter] = useState('all');
@@ -314,13 +314,18 @@ export default function Crm() {
           <p className="brand-inline">Tech-Con</p>
           <h1>Cereri de evaluare UR20</h1>
           <p className="fine">
-            CRM demo: datele rămân în acest browser. În producție, aceleași câmpuri intră în CRM-ul existent (export CSV).
+            Demonstrație: datele rămân în acest browser. În producție, cererile ajung pe server și exportul CSV intră în CRM-ul existent.
           </p>
         </div>
         <nav className="crm-tools">
-          <a className="chip-btn" href="#">
+          <a className="chip-btn" href="../">
             Instrumentul
           </a>
+          {onSignOut && (
+            <button type="button" className="chip-btn" onClick={onSignOut}>
+              Ieși
+            </button>
+          )}
           <button type="button" className="chip-btn" onClick={loadDemo}>
             Încarcă cereri demo
           </button>
@@ -350,7 +355,7 @@ export default function Crm() {
             <div className="empty">
               <p>Nicio cerere încă.</p>
               <p>
-                Trimite o cerere din <a href="#">instrument</a> sau încarcă cererile demo ca să vezi pipeline-ul și follow-up-ul.
+                Trimite o cerere din <a href="../">instrument</a> sau încarcă cererile demo ca să vezi pipeline-ul și follow-up-ul.
               </p>
             </div>
           ) : shown.length === 0 ? (
