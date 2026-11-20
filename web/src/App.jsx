@@ -197,7 +197,6 @@ function Tool() {
               </b>
             </span>
           </div>
-          <p className="note">animație ilustrativă, ×{SPEED}</p>
           <ThemeToggle theme={theme} onChange={changeTheme} className="stage-toggle" />
           <Assistant
             answers={answers}
