@@ -5,6 +5,17 @@ import { trafficSource, upsertLead } from '../lib/store.js';
 import { PREFERENCES } from '../lib/leads.js';
 
 const ROLES = ['Director de producție', 'Director general sau investiții', 'Inginer de proces sau mentenanță', 'Alt rol'];
+// Sample company for a quick walkthrough of the form (valid check digit, fictitious firm).
+const SAMPLE_COMPANY = {
+  company: 'Ingrediente Exemplu SRL',
+  cui: '12345674',
+  role: 'Director de producție',
+  county: 'IS',
+  preference: 'demo',
+  phone: '0700 000 123',
+  consent: true,
+};
+
 const DEMO_NOTE = 'Folosim datele doar ca să răspundem cererii tale.';
 
 function useFocus() {
@@ -90,7 +101,19 @@ export default function Request({ answers, assessment, onBack, onSent }) {
         </button>
         <span className="count">Pasul 2 din 2</span>
       </div>
-      <Heading>Despre firma ta</Heading>
+      <div className="form-head">
+        <Heading>Despre firma ta</Heading>
+        <button
+          type="button"
+          className="chip-btn"
+          onClick={() => {
+            setForm((f) => ({ ...f, ...SAMPLE_COMPANY }));
+            setTouched({});
+          }}
+        >
+          Completează automat
+        </button>
+      </div>
 
       <Field id="company" label="Numele firmei" error={show('company')}>
         <input id="company" autoComplete="organization" value={form.company} onChange={set('company')} onBlur={blur('company')} aria-invalid={!!show('company')} />

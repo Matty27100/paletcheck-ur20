@@ -597,3 +597,42 @@ body:has(.cta-bar) .assistant-fab {
   background: rgba(255, 255, 255, 0.08);
   color: #f3f5f8;
 }
+
+/* Company form: heading and autofill on one row */
+.form-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.form-head h1 {
+  margin-bottom: 16px;
+}
+
+.form-head .chip-btn {
+  flex: none;
+  margin-top: 2px;
+}
+
+/* Typing on a phone: Safari's keyboard and floating address bar would push the sticky
+   action bar and the assistant pill over the field being filled. While a field has
+   focus they leave the overlay and sit at the end of the page instead. */
+@media (max-width: 899px) {
+  body:has(.card :is(input, select, textarea):focus) .cta-bar {
+    position: static;
+  }
+
+  body:has(.card :is(input, select, textarea):focus) .assistant-fab {
+    display: none;
+  }
+
+  /* Safari's visible area, not the area behind its toolbars */
+  :root[data-theme^='glass'] .card {
+    padding-bottom: calc(84px + env(safe-area-inset-bottom));
+  }
+
+  .cta-bar {
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+}

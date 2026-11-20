@@ -87,7 +87,6 @@ function Tool() {
   }, []);
 
 
-  const swapping = stats.status.some((s) => s !== 'filling');
   let body;
   switch (screen.name) {
     case 'checking':
@@ -197,7 +196,6 @@ function Tool() {
                 {stats.counts[stats.active]}/{answers.perPallet}
               </b>
             </span>
-            {swapping && <span className="pill pill-alert">schimb de palet, manual</span>}
           </div>
           <p className="note">animație ilustrativă, ×{SPEED}</p>
           <ThemeToggle theme={theme} onChange={changeTheme} className="stage-toggle" />
