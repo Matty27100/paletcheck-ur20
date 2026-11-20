@@ -668,3 +668,49 @@
   background: rgba(255, 255, 255, 0.08);
   color: #f3f5f8;
 }
+
+/* First-visit choice and the owners' link */
+.entry h1 {
+  margin-top: 6px;
+}
+
+.owners-link {
+  margin-top: 14px;
+}
+
+/* Printing ("Descarcă fișa"): only the pre-evaluation sheet, always dark-on-white,
+   whatever the screen theme. */
+@media print {
+  :root[data-theme] {
+    color-scheme: light !important;
+  }
+
+  :root[data-theme],
+  :root[data-theme] body {
+    background: #fff !important;
+    color: #111 !important;
+  }
+
+  :root[data-theme] .demo,
+  :root[data-theme] .demo::after,
+  :root[data-theme] .assistant-backdrop {
+    display: none !important;
+  }
+
+  :root[data-theme] .print-sheet {
+    display: block !important;
+    color: #111;
+  }
+
+  :root[data-theme] .print-sheet header p:first-child,
+  :root[data-theme] .print-sheet h2 {
+    color: #1226aa;
+  }
+
+  :root[data-theme] .print-sheet h1,
+  :root[data-theme] .print-sheet th,
+  :root[data-theme] .print-sheet td,
+  :root[data-theme] .print-sheet b {
+    color: #111;
+  }
+}

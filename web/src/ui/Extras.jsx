@@ -13,7 +13,7 @@ function useFocusRef() {
 function visitorSteps(lead) {
   const when = { confirm: 'Acum', call: 'În cel mult o oră', casestudy: 'În 2 zile', next: 'În 5 zile', checkin: 'După 2 săptămâni' };
   const what = {
-    confirm: 'Fișa de pre-evaluare, gata de descărcat mai jos.',
+    confirm: `Am trimis confirmarea cu fișa de pre-evaluare pe ${lead.email}.`,
     call: lead.phone
       ? `Un inginer de la centrul ${lead.hub} te sună 15 minute ca să confirme datele liniei.`
       : `Un inginer de la centrul ${lead.hub} îți propune pe e-mail trei intervale pentru un apel scurt.`,

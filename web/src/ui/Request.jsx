@@ -16,6 +16,8 @@ const SAMPLE_COMPANY = {
   consent: true,
 };
 
+const SAMPLE_EMAIL = 'achizitii@ingrediente-exemplu.ro';
+
 const DEMO_NOTE = 'Folosim datele doar ca să răspundem cererii tale.';
 
 function useFocus() {
@@ -241,7 +243,19 @@ function StepEmail({ form, set, blur, show, errors, setTouched, onBack, next }) 
         </button>
         <span className="count">Pasul 1 din 2</span>
       </div>
-      <Heading>Unde trimitem fișa de pre-evaluare?</Heading>
+      <div className="form-head">
+        <Heading>Unde trimitem fișa de pre-evaluare?</Heading>
+        <button
+          type="button"
+          className="chip-btn"
+          onClick={() => {
+            set('email')({ target: { value: SAMPLE_EMAIL } });
+            setTouched((t) => ({ ...t, email: false }));
+          }}
+        >
+          Completează automat
+        </button>
+      </div>
       <p className="reason">Primești rezultatul și lista de verificat, iar un inginer analizează datele liniei tale.</p>
       <Field id="email" label="E-mail de serviciu" error={show('email')}>
         <input

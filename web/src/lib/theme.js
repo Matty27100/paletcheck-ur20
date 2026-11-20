@@ -1,4 +1,4 @@
-// Light or dark glass. The visitor's choice is remembered; otherwise the device setting wins.
+// Light or dark glass. Light by default; the visitor's choice is remembered.
 // `?tema=light|dark` overrides both (used for screenshots).
 
 const KEY = 'paletcheck.theme';
@@ -17,7 +17,7 @@ export function initialTheme() {
   if (param === 'light' || param === 'dark') return param;
   const saved = stored();
   if (saved === 'light' || saved === 'dark') return saved;
-  return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  return 'light';
 }
 
 export function applyTheme(theme) {

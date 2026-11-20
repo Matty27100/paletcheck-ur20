@@ -10,6 +10,7 @@ import Request from './ui/Request.jsx';
 import Impact from './ui/Impact.jsx';
 import Assistant from './ui/Assistant.jsx';
 import ThemeToggle from './ui/ThemeToggle.jsx';
+import Entry, { entryChosen } from './ui/Entry.jsx';
 import { applyTheme, initialTheme, saveTheme } from './lib/theme.js';
 import { IMPACT_DEFAULTS, cellsNeeded } from './lib/impact.js';
 import PrintSheet from './ui/PrintSheet.jsx';
@@ -49,6 +50,8 @@ function Tool() {
   const [answers, setAnswers] = useState(init.answers);
   const [screen, setScreen] = useState(init.screen);
   const [sent, setSent] = useState(null);
+  // First visit without a shared result: ask whether this is a client or Tech-Con.
+  const [entry, setEntry] = useState(() => entryChosen() || Boolean(fromQuery(window.location.search)));
   const [theme, setTheme] = useState(initialTheme);
   const changeTheme = (t) => {
     setTheme(t);
@@ -168,6 +171,11 @@ function Tool() {
             onBack={() => window.history.back()}
           />
           {i === 0 && <Faq />}
+          {i === 0 && (
+            <a className="link link-quiet owners-link" href="admin/">
+              Zona proprietarilor (Tech-Con)
+            </a>
+          )}
         </>
       );
     }
@@ -207,7 +215,7 @@ function Tool() {
             }}
           />
         </section>
-        <section className="card">{body}</section>
+        <section className="card">{entry ? body : <Entry onClient={() => setEntry(true)} />}</section>
       </main>
       <PrintSheet answers={answers} assessment={assessment} lead={sent?.lead} />
     </>
