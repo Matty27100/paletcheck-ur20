@@ -1,0 +1,14 @@
+Câte tone ridică echipa ta de mână, într-un schimb?
+
+La 6 găleți de 13 kg pe minut, răspunsul e 37 de tone în 8 ore. Pe două sau trei schimburi, în fiecare zi.
+
+Într-o fabrică de ingrediente pentru panificație, o celulă cu robot colaborativ UR20 preia gălețile de pe transportor și le așază pe palet. La testele de recepție a atins 7,4 găleți/min la 13 kg și 8,6 la 5 kg, peste ținta de 6. Oamenii schimbă paleții și pun separatoarele; ridicarea repetitivă o face robotul.
+
+Se potrivește și liniei tale? Verifică în 2 minute, de pe telefon: 5 întrebări, rezultat imediat, fără cont.
+👉 https://matty27100.github.io/paletcheck-ur20/?utm_source=linkedin&utm_campaign=lansare-2027
+
+Rezultatul îți arată cât durează un palet, câte tone se ridică pe schimb și dacă robotul ține pasul cu umplerea. Dacă vrei, un inginer Tech-Con din Dragomirești-Deal, Iași sau Timișoara îți propune o evaluare tehnică.
+
+Rezultatele sunt de test, ale aplicației de referință, nu o garanție pentru orice fabrică.
+
+#automatizare #industriaalimentara #robotica #UniversalRobots #paletizare

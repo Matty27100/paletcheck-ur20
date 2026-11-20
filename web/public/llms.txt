@@ -1,0 +1,19 @@
+# Verificare de compatibilitate pentru celula de paletizare UR20 (Tech-Con)
+
+> Instrument web gratuit, în limba română, pentru fabrici care umplu găleți de plastic (3–15 kg). Cinci întrebări despre linie (greutatea găleții, găleți pe minut, găleți pe palet, schimburi, mâner) dau un verdict orientativ: compatibil, posibil cu evaluare tehnică sau în afara domeniului testat.
+
+## Fapte (aplicația de referință, rezultate de test, nu garanții)
+- Celulă cu robot colaborativ Universal Robots UR20, dispozitiv de prindere adaptat găleții și cameră 2D care verifică poziția mânerului.
+- Două poziții de paletizare pe celulă; schimbarea paletului și separatoarele rămân manuale.
+- Țintă: minimum 6 găleți/min. Testat: 7,4 găleți/min la 13 kg (44 pe palet) și 8,6 găleți/min la 5 kg (100 pe palet).
+- Sarcina utilă UR20: 20 kg, inclusiv dispozitivul de prindere (25 kg doar în condițiile din manual).
+- Un robot mai rapid nu crește singur debitul fabricii: dacă umplerea e mai lentă, ea rămâne limita.
+
+## Ce face instrumentul
+- Calculează minutele până la un palet complet, paleții și tonele ridicate manual pe schimb.
+- Spune dacă robotul ar fi blocajul liniei.
+- Trimite o cerere de evaluare tehnică către cel mai apropiat centru Tech-Con: Dragomirești-Deal (Ilfov), Iași sau Timișoara.
+
+## Ce nu face
+- Nu calculează economii salariale sau recuperarea investiției.
+- Nu include transportul paleților, înfolierea sau expedierea.
