@@ -65,45 +65,6 @@ export function Sent({ lead, duplicate, answers, title, onRestart }) {
   );
 }
 
-export const EXAMPLES = {
-  normal: { weight: 13, rate: 6.5, perPallet: 44, shifts: 2, handle: 'da', separators: true, network: 'PROFINET' },
-  wrong: { weight: '1O', rate: '0', perPallet: '', shifts: '2', shiftHours: '8', handle: 'da' },
-  outside: { weight: 22, rate: 9.5, perPallet: 36, shifts: 3, handle: 'nu' },
-};
-
-export function Examples({ onPick, onBack }) {
-  const heading = useFocusRef();
-  return (
-    <div className="screen examples">
-      <div className="progress">
-        <button type="button" className="back" onClick={onBack}>
-          Înapoi
-        </button>
-      </div>
-      <h1 ref={heading} tabIndex={-1}>
-        Exemple de linii
-      </h1>
-      <p className="reason">Trei linii tipice, ca să vezi cum răspunde verificarea.</p>
-      <div className="options">
-        <button type="button" onClick={() => onPick('normal')}>
-          Linie potrivită
-          <small>13 kg, 6,5 găleți/min, 44 pe palet, 2 schimburi</small>
-        </button>
-        <button type="button" onClick={() => onPick('wrong')}>
-          Date incomplete
-          <small>Greutate „1O”, debit 0, palet necompletat</small>
-        </button>
-        <button type="button" onClick={() => onPick('outside')}>
-          Linie în afara domeniului
-          <small>22 kg, 9,5 găleți/min, fără mâner</small>
-        </button>
-      </div>
-    </div>
-  );
-}
-
-
-
 export function Faq() {
   return (
     <section className="faq" aria-labelledby="faq-title">

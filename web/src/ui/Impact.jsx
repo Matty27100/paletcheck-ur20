@@ -1,3 +1,4 @@
+import { AssistantButton } from './Assistant.jsx';
 import { useEffect, useRef } from 'react';
 import { fmt, testedRateFor } from '../lib/calc.js';
 import { IMPACT_DEFAULTS, impact } from '../lib/impact.js';
@@ -166,9 +167,12 @@ export default function Impact({ answers, options, onOptions, onCells, onBack, o
       </p>
 
       <div className="cta-bar">
+        <div className="cta-row">
         <button type="button" className="primary" onClick={onRequest}>
           Solicită evaluare tehnică
         </button>
+        <AssistantButton />
+        </div>
         <p>Inginerul confirmă cifrele pe linia ta.</p>
       </div>
     </div>

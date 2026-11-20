@@ -13,7 +13,7 @@ import ThemeToggle from './ui/ThemeToggle.jsx';
 import { applyTheme, initialTheme, saveTheme } from './lib/theme.js';
 import { IMPACT_DEFAULTS, cellsNeeded } from './lib/impact.js';
 import PrintSheet from './ui/PrintSheet.jsx';
-import { EXAMPLES, Examples, Faq, Sent } from './ui/Extras.jsx';
+import { Faq, Sent } from './ui/Extras.jsx';
 
 // The 3D scene is a separate chunk: the questions render before three.js arrives.
 const CellStage = lazy(() => import('./scene/CellStage.jsx'));
@@ -86,11 +86,6 @@ function Tool() {
     setScreen({ name: 'result' });
   }, []);
 
-  const pickExample = (id) => {
-    if (id === 'wrong') return go({ name: 'edit', raw: EXAMPLES.wrong, showErrors: true });
-    setAnswers({ ...DEFAULTS, ...EXAMPLES[id] });
-    go({ name: 'checking' });
-  };
 
   const swapping = stats.status.some((s) => s !== 'filling');
   let body;
@@ -161,9 +156,6 @@ function Tool() {
         />
       ) : null;
       break;
-    case 'examples':
-      body = <Examples onPick={pickExample} onBack={() => window.history.back()} />;
-      break;
     default: {
       const i = screen.i || 0;
       body = (
@@ -175,7 +167,6 @@ function Tool() {
             onAnswer={setAnswer}
             onNext={() => (i + 1 < QUESTIONS.length ? go({ name: 'q', i: i + 1 }) : toChecking())}
             onBack={() => window.history.back()}
-            onExamples={() => go({ name: 'examples' })}
           />
           {i === 0 && <Faq />}
         </>

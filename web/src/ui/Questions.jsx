@@ -107,7 +107,7 @@ export function NumberField({ id, value, limit, step, onChange, onEnter, autoFoc
   );
 }
 
-export default function Questions({ index, answers, onAnswer, onNext, onBack, onExamples }) {
+export default function Questions({ index, answers, onAnswer, onNext, onBack }) {
   const q = QUESTIONS[index];
   const [custom, setCustom] = useState(!!q.number);
   const [valid, setValid] = useState(true);
@@ -203,11 +203,6 @@ export default function Questions({ index, answers, onAnswer, onNext, onBack, on
         )}
       </div>
 
-      {index === 0 && (
-        <button type="button" className="link link-quiet" onClick={onExamples}>
-          Vezi exemple de linii
-        </button>
-      )}
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import { AssistantButton } from './Assistant.jsx';
 import { useEffect, useRef, useState } from 'react';
 import { FACTS } from '../lib/facts.js';
 import { STILL_NEEDED, fmt, testedRateFor } from '../lib/calc.js';
@@ -192,9 +193,12 @@ export default function Result({ answers, assessment, impactOptions, onChange, o
       </p>
 
       <div className="cta-bar">
+        <div className="cta-row">
         <button type="button" className="primary" onClick={onRequest}>
           {cta}
         </button>
+        <AssistantButton />
+        </div>
         <p>Gratuit. Îți răspunde un inginer Tech-Con.</p>
       </div>
     </div>

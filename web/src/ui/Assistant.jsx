@@ -44,6 +44,11 @@ export default function Assistant({ answers, assessment, onApply }) {
     if (open) input.current?.focus();
   }, [open]);
   useEffect(() => {
+    const show = () => setOpen(true);
+    window.addEventListener('assistant:open', show);
+    return () => window.removeEventListener('assistant:open', show);
+  }, []);
+  useEffect(() => {
     list.current?.scrollTo({ top: list.current.scrollHeight, behavior: 'smooth' });
   }, [items, busy]);
   useEffect(() => {
@@ -104,9 +109,12 @@ export default function Assistant({ answers, assessment, onApply }) {
 
   return (
     <>
-      <button type="button" className="assistant-fab" onClick={() => setOpen(true)} aria-haspopup="dialog">
-        Întreabă asistentul
-      </button>
+      {createPortal(
+        <button type="button" className="assistant-fab" onClick={() => setOpen(true)} aria-haspopup="dialog">
+          Întreabă asistentul
+        </button>,
+        document.body,
+      )}
       {open &&
         createPortal(
         <div className="assistant-backdrop" onClick={() => setOpen(false)}>
@@ -192,5 +200,22 @@ export default function Assistant({ answers, assessment, onApply }) {
           document.body,
         )}
     </>
+  );
+}
+
+// Round chat button for screens with a bottom action bar.
+export function AssistantButton() {
+  return (
+    <button
+      type="button"
+      className="assistant-inline"
+      aria-label="Întreabă asistentul"
+      title="Întreabă asistentul"
+      onClick={() => window.dispatchEvent(new Event('assistant:open'))}
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-7l-5 4v-4H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z" />
+      </svg>
+    </button>
   );
 }
