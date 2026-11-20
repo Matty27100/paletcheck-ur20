@@ -2,7 +2,8 @@
    Shared structure first, then the light and dark tones. */
 
 :root[data-theme^='glass'] .demo {
-  display: block;
+  display: flow-root; /* contains the panel's top margin, so the page is exactly as tall as its content */
+  min-height: 0;
   max-width: none;
   margin: 0;
   padding: 0;
@@ -331,7 +332,7 @@
 /* Phone: the panel is a sheet anchored to the bottom, so no stray floor shows under it */
 @media (max-width: 899px) {
   :root[data-theme^='glass'] .card {
-    min-height: calc(62svh + 1px);
+    min-height: calc(100lvh - 38svh); /* reaches the bottom even with Safari's bars collapsed */
     margin: 38svh 0 0;
     border-radius: 28px 28px 0 0;
     border-bottom: 0;
@@ -634,5 +635,33 @@ body:has(.cta-bar) .assistant-fab {
 
   .cta-bar {
     padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+}
+
+/* iPhone: no elastic bounce at the page edges, and if a bounce still happens (older iOS)
+   it reveals the panel's colour, not the 3D floor under it. */
+@media (max-width: 899px) {
+  :root[data-theme^='glass'],
+  :root[data-theme^='glass'] body {
+    overscroll-behavior-y: none;
+  }
+
+  :root[data-theme^='glass'] .demo::after {
+    content: '';
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 62lvh;
+    pointer-events: none;
+  }
+
+  :root[data-theme='glass'] .demo::after {
+    background: #eef0f3;
+  }
+
+  :root[data-theme='glass-dark'] .demo::after {
+    background: #14171c;
   }
 }
