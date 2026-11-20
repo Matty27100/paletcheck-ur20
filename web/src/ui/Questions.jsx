@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { LIMITS, fmt, parseNumber } from '../lib/calc.js';
+import { AssistantButton } from './Assistant.jsx';
 
 export const QUESTIONS = [
   {
@@ -203,6 +204,9 @@ export default function Questions({ index, answers, onAnswer, onNext, onBack }) 
         )}
       </div>
 
+      <div className="assistant-slot">
+        <AssistantButton labelled />
+      </div>
     </div>
   );
 }
