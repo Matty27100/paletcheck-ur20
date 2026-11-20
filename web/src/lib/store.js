@@ -1,8 +1,11 @@
 // Browser storage for the prototype. Every call is guarded: private windows and
-// blocked storage must never break the tool.
+// blocked storage must never break the tool. A production version would send
+// requests to the CRM Tech-Con already uses; here they stay in this browser.
+
+import { nextAction, stageLabel } from './leads.js';
 
 const KEY_ANSWERS = 'paletcheck.answers';
-const KEY_LEADS = 'paletcheck.leads';
+const KEY_LEADS = 'paletcheck.leads.v2';
 
 const safe = (fn, fallback) => {
   try {
@@ -16,20 +19,38 @@ export const loadAnswers = () => safe(() => JSON.parse(localStorage.getItem(KEY_
 export const saveAnswers = (a) => safe(() => localStorage.setItem(KEY_ANSWERS, JSON.stringify(a)));
 
 export const loadLeads = () => safe(() => JSON.parse(localStorage.getItem(KEY_LEADS)) || [], []);
-const saveLeads = (leads) => safe(() => localStorage.setItem(KEY_LEADS, JSON.stringify(leads)));
+export const saveLeads = (leads) => safe(() => localStorage.setItem(KEY_LEADS, JSON.stringify(leads)));
 
-// One company = one request: a second request with the same CUI updates the first.
+// One company = one request: a second request with the same CUI updates the first
+// and keeps its pipeline stage, notes and follow-up history.
 export function upsertLead(lead) {
   const leads = loadLeads();
   const i = leads.findIndex((l) => l.cui === lead.cui);
   const duplicate = i >= 0;
-  if (duplicate) leads[i] = { ...leads[i], ...lead, created: leads[i].created, updated: lead.created };
-  else leads.unshift(lead);
+  if (duplicate) {
+    const old = leads[i];
+    leads[i] = {
+      ...old,
+      ...lead,
+      createdAt: old.createdAt,
+      stage: old.stage,
+      done: old.done,
+      notes: old.notes,
+      contactedAt: old.contactedAt,
+      history: [...(old.history || []), { at: lead.createdAt, text: 'Cerere nouă de la aceeași firmă: date actualizate' }],
+    };
+  } else {
+    leads.unshift({ stage: 'new', done: {}, notes: [], history: [{ at: lead.createdAt, text: 'Cerere primită' }], ...lead });
+  }
   saveLeads(leads);
   return { duplicate, leads };
 }
 
-export const clearLeads = () => saveLeads([]);
+export function updateLead(updated) {
+  const leads = loadLeads().map((l) => (l.cui === updated.cui ? updated : l));
+  saveLeads(leads);
+  return leads;
+}
 
 export function trafficSource() {
   const p = safe(() => new URLSearchParams(window.location.search), new URLSearchParams());
@@ -37,7 +58,7 @@ export function trafficSource() {
 }
 
 const COLUMNS = [
-  ['created', 'Data'],
+  ['createdAt', 'Data cererii'],
   ['company', 'Companie'],
   ['cui', 'CUI'],
   ['role', 'Rol'],
@@ -45,23 +66,43 @@ const COLUMNS = [
   ['phone', 'Telefon'],
   ['county', 'Judet'],
   ['hub', 'Centru Tech-Con'],
-  ['verdict', 'Verdict'],
   ['priority', 'Prioritate'],
+  ['stage', 'Etapa'],
+  ['nextStep', 'Pasul urmator'],
+  ['nextDue', 'Termen'],
+  ['contactedAt', 'Primul contact'],
+  ['verdict', 'Verdict'],
+  ['preference', 'Pas preferat'],
   ['weight', 'Greutate galeata kg'],
   ['rate', 'Galeti pe minut'],
   ['perPallet', 'Galeti pe palet'],
   ['shifts', 'Schimburi'],
   ['handle', 'Maner'],
-  ['separators', 'Separatoare'],
   ['network', 'Retea linie'],
+  ['consentMarketing', 'Acord marketing'],
   ['source', 'Sursa'],
 ];
 
-// Semicolon-separated with a BOM, so Excel in Romanian locale opens it correctly.
-export function leadsCsv(leads) {
+const local = (iso) => (iso ? new Date(iso).toLocaleString('ro-RO') : '');
+
+// Semicolon-separated with a BOM, so Excel in Romanian locale and most CRMs import it cleanly.
+export function leadsCsv(leads, now = Date.now()) {
   const cell = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
   const rows = [COLUMNS.map((c) => cell(c[1])).join(';')];
-  for (const l of leads) rows.push(COLUMNS.map(([k]) => cell(l[k])).join(';'));
+  for (const l of leads) {
+    const next = nextAction(l, now);
+    const flat = {
+      ...l,
+      ...(l.answers || {}),
+      createdAt: local(l.createdAt),
+      contactedAt: local(l.contactedAt || l.done?.call),
+      stage: stageLabel(l.stage),
+      nextStep: next?.title || '',
+      nextDue: next ? local(new Date(next.due).toISOString()) : '',
+      consentMarketing: l.consentMarketing ? 'da' : 'nu',
+    };
+    rows.push(COLUMNS.map(([k]) => cell(flat[k])).join(';'));
+  }
   return '﻿' + rows.join('\r\n');
 }
 

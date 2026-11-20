@@ -8,7 +8,20 @@ import Result from './ui/Result.jsx';
 import EditForm from './ui/EditForm.jsx';
 import Request from './ui/Request.jsx';
 import PrintSheet from './ui/PrintSheet.jsx';
-import { EXAMPLES, Examples, Faq, Leads, Sent } from './ui/Extras.jsx';
+import { EXAMPLES, Examples, Faq, Sent } from './ui/Extras.jsx';
+
+// The CRM is a separate chunk, opened at #crm.
+const Crm = lazy(() => import('./crm/Crm.jsx'));
+
+function useHash() {
+  const [hash, setHash] = useState(window.location.hash);
+  useEffect(() => {
+    const on = () => setHash(window.location.hash);
+    window.addEventListener('hashchange', on);
+    return () => window.removeEventListener('hashchange', on);
+  }, []);
+  return hash;
+}
 
 // The 3D scene is a separate chunk: the questions render before three.js arrives.
 const CellStage = lazy(() => import('./scene/CellStage.jsx'));
@@ -35,6 +48,17 @@ function initialState() {
 }
 
 export default function App() {
+  const hash = useHash();
+  if (hash === '#crm')
+    return (
+      <Suspense fallback={<p className="crm-loading">Se încarcă CRM-ul…</p>}>
+        <Crm />
+      </Suspense>
+    );
+  return <Tool />;
+}
+
+function Tool() {
   const [init] = useState(initialState);
   const [answers, setAnswers] = useState(init.answers);
   const [screen, setScreen] = useState(init.screen);
@@ -126,16 +150,12 @@ export default function App() {
           {...sent}
           answers={answers}
           title={assessment.verdict.title}
-          onLeads={() => go({ name: 'leads' })}
           onRestart={restart}
         />
       ) : null;
       break;
-    case 'leads':
-      body = <Leads onBack={() => window.history.back()} />;
-      break;
     case 'examples':
-      body = <Examples onPick={pickExample} onLeads={() => go({ name: 'leads' })} onBack={() => window.history.back()} />;
+      body = <Examples onPick={pickExample} onBack={() => window.history.back()} />;
       break;
     default: {
       const i = screen.i || 0;

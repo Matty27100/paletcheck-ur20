@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { COUNTIES } from '../lib/facts.js';
 import { nearestHub, normalCUI, priority, validCUI, validEmail } from '../lib/calc.js';
 import { trafficSource, upsertLead } from '../lib/store.js';
+import { PREFERENCES } from '../lib/leads.js';
 
 const ROLES = ['Director de producție', 'Director general sau investiții', 'Inginer de proces sau mentenanță', 'Alt rol'];
 const DEMO_NOTE = 'Prototip de concurs: folosiți doar date fictive.';
@@ -15,7 +16,17 @@ function useFocus() {
 // Two short steps: the e-mail first, the company details after.
 export default function Request({ answers, assessment, onBack, onSent }) {
   const [step, setStep] = useState(1);
-  const [form, setForm] = useState({ email: '', company: '', cui: '', role: '', county: answers.county || '', phone: '' });
+  const [form, setForm] = useState({
+    email: '',
+    company: '',
+    cui: '',
+    role: '',
+    county: answers.county || '',
+    phone: '',
+    preference: '',
+    consent: false,
+    consentMarketing: false,
+  });
   const [touched, setTouched] = useState({});
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
   const blur = (k) => () => setTouched({ ...touched, [k]: true });
@@ -27,6 +38,8 @@ export default function Request({ answers, assessment, onBack, onSent }) {
     role: !form.role ? 'Alegeți rolul.' : null,
     county: !form.county ? 'Alegeți județul.' : null,
     phone: form.phone && !/^[+\d][\d\s.-]{8,}$/.test(form.phone.trim()) ? 'Număr de telefon incomplet.' : null,
+    preference: !form.preference ? 'Alegeți pasul următor.' : null,
+    consent: !form.consent ? 'Fără acord nu putem răspunde cererii.' : null,
   };
   const show = (k) => touched[k] && errors[k];
 
@@ -34,28 +47,35 @@ export default function Request({ answers, assessment, onBack, onSent }) {
 
   const submit = (e) => {
     e.preventDefault();
-    const keys = ['company', 'cui', 'role', 'county', 'phone'];
+    const keys = ['company', 'cui', 'role', 'county', 'preference', 'phone', 'consent'];
     setTouched(Object.fromEntries(keys.map((k) => [k, true])));
     if (keys.some((k) => errors[k])) return;
     const hub = nearestHub(form.county);
+    const { consent, ...fields } = form;
     const lead = {
-      created: new Date().toLocaleString('ro-RO'),
-      ...form,
+      ...fields,
+      createdAt: new Date().toISOString(),
       company: form.company.trim(),
+      email: form.email.trim(),
+      phone: form.phone.trim(),
       cui: normalCUI(form.cui),
       county: COUNTIES.find((c) => c[0] === form.county)?.[1] || form.county,
       countyCode: form.county,
       hub: hub?.name,
       verdict: assessment.verdict.title,
+      verdictLevel: assessment.verdict.level,
       priority: priority(assessment.verdict.level, answers.shifts),
-      weight: answers.weight,
-      rate: answers.rate,
-      perPallet: answers.perPallet,
-      shifts: answers.shifts,
-      handle: answers.handle,
-      separators: answers.separators === null ? '' : answers.separators ? 'da' : 'nu',
-      network: answers.network || '',
+      answers: {
+        weight: answers.weight,
+        rate: answers.rate,
+        perPallet: answers.perPallet,
+        shifts: answers.shifts,
+        handle: answers.handle,
+        separators: answers.separators,
+        network: answers.network || '',
+      },
       source: trafficSource(),
+      consentAt: consent ? new Date().toISOString() : null,
     };
     const { duplicate } = upsertLead(lead);
     onSent(lead, duplicate);
@@ -106,10 +126,53 @@ export default function Request({ answers, assessment, onBack, onSent }) {
           ))}
         </select>
       </Field>
+      <fieldset className="field">
+        <legend>Ce pas următor preferi?</legend>
+        <div className="seg seg-wrap">
+          {PREFERENCES.map((p) => (
+            <button
+              key={p.id}
+              type="button"
+              aria-pressed={form.preference === p.id}
+              onClick={() => {
+                setForm({ ...form, preference: p.id });
+                setTouched({ ...touched, preference: true });
+              }}
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
+        <p className="field-error">{show('preference')}</p>
+      </fieldset>
       <Field id="phone" label="Telefon (opțional)" hint="Doar dacă vrei un apel de 15 minute cu un inginer." error={show('phone')}>
         <input id="phone" type="tel" autoComplete="tel" value={form.phone} onChange={set('phone')} onBlur={blur('phone')} aria-invalid={!!show('phone')} />
       </Field>
 
+      <div className="checks">
+        <label className="check">
+          <input
+            type="checkbox"
+            checked={form.consent}
+            onChange={(e) => {
+              setForm({ ...form, consent: e.target.checked });
+              setTouched({ ...touched, consent: true });
+            }}
+          />
+          <span>
+            Sunt de acord ca Tech-Con să folosească aceste date pentru a răspunde cererii mele de evaluare.
+          </span>
+        </label>
+        <p className="field-error">{show('consent')}</p>
+        <label className="check">
+          <input
+            type="checkbox"
+            checked={form.consentMarketing}
+            onChange={(e) => setForm({ ...form, consentMarketing: e.target.checked })}
+          />
+          <span>Opțional: vreau să primesc studii de caz și invitații la demonstrații.</span>
+        </label>
+      </div>
       <button type="submit" className="primary">
         Trimite cererea
       </button>

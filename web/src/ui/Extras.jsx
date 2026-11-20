@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { clearLeads, downloadCsv, loadLeads } from '../lib/store.js';
 import { shareResult } from '../lib/share.js';
 import { FAQ } from '../lib/faq.js';
+import { followups } from '../lib/leads.js';
 
 function useFocusRef() {
   const ref = useRef(null);
@@ -9,7 +9,22 @@ function useFocusRef() {
   return ref;
 }
 
-export function Sent({ lead, duplicate, answers, title, onLeads, onRestart }) {
+// What the visitor sees about the follow-up: the same schedule the sales team works from.
+function visitorSteps(lead) {
+  const when = { confirm: 'Acum', call: 'În cel mult o oră', casestudy: 'În 2 zile', next: 'În 5 zile', checkin: 'După 2 săptămâni' };
+  const what = {
+    confirm: `Confirmarea pe ${lead.email}, cu fișa de pre-evaluare.`,
+    call: lead.phone
+      ? `Un inginer de la centrul ${lead.hub} te sună 15 minute ca să confirme datele liniei.`
+      : `Un inginer de la centrul ${lead.hub} îți propune pe e-mail trei intervale pentru un apel scurt.`,
+    casestudy: 'Studiul de caz și video-ul unei celule care paletizează găleți.',
+  };
+  return followups(lead, Date.now())
+    .filter((s) => s.id !== 'checkin')
+    .map((s) => ({ id: s.id, when: when[s.id], text: what[s.id] || `${s.title}.` }));
+}
+
+export function Sent({ lead, duplicate, answers, title, onRestart }) {
   const heading = useFocusRef();
   const [status, setStatus] = useState(null);
   return (
@@ -18,29 +33,20 @@ export function Sent({ lead, duplicate, answers, title, onLeads, onRestart }) {
       <h1 ref={heading} tabIndex={-1}>
         Mulțumim. Un inginer de la centrul Tech-Con {lead.hub} preia cererea.
       </h1>
-      <p className="reason">
-        Răspuns în cel mult o zi lucrătoare, cu propunerea de evaluare tehnică sau demonstrație. În versiunea finală fișa
-        pleacă automat pe {lead.email}; în prototip o descarci mai jos.
-      </p>
       {duplicate && (
         <p className="toast" role="status">
           Firma cu acest CUI avea deja o cerere. Am actualizat-o: o firmă se numără o singură dată.
         </p>
       )}
-      <dl className="summary">
-        <div>
-          <dt>Prioritate</dt>
-          <dd>{lead.priority}</dd>
-        </div>
-        <div>
-          <dt>Centru</dt>
-          <dd>{lead.hub}</dd>
-        </div>
-        <div>
-          <dt>Sursa</dt>
-          <dd>{lead.source}</dd>
-        </div>
-      </dl>
+      <h2>Ce urmează</h2>
+      <ol className="timeline">
+        {visitorSteps(lead).map((s) => (
+          <li key={s.id}>
+            <b>{s.when}</b>
+            <span>{s.text}</span>
+          </li>
+        ))}
+      </ol>
       <button type="button" className="primary" onClick={() => window.print()}>
         Descarcă fișa (PDF)
       </button>
@@ -52,68 +58,12 @@ export function Sent({ lead, duplicate, answers, title, onLeads, onRestart }) {
           {status}
         </p>
       )}
-      <button type="button" className="link" onClick={onLeads}>
-        Vezi cererile salvate (demo CRM)
-      </button>
+      <p className="fine">În prototip nu se trimite niciun e-mail; cererea apare în CRM-ul demo din acest browser.</p>
+      <a className="link" href="#crm">
+        Vezi cererea în CRM (demo)
+      </a>
       <button type="button" className="link" onClick={onRestart}>
         Verifică altă linie
-      </button>
-    </div>
-  );
-}
-
-export function Leads({ onBack }) {
-  const heading = useFocusRef();
-  const [leads, setLeads] = useState(loadLeads);
-  return (
-    <div className="screen leads">
-      <div className="progress">
-        <button type="button" className="back" onClick={onBack}>
-          Înapoi
-        </button>
-      </div>
-      <h1 ref={heading} tabIndex={-1}>
-        Cereri salvate
-      </h1>
-      <p className="reason">
-        Ce primește echipa de vânzări. Fișierul CSV se importă în CRM-ul existent. În prototip, datele rămân doar în acest
-        browser.
-      </p>
-      {leads.length === 0 ? (
-        <p className="empty">Nicio cerere încă. Completează o verificare și trimite cererea ca să apară aici.</p>
-      ) : (
-        <ul className="lead-list">
-          {leads.map((l) => (
-            <li key={l.cui}>
-              <span className={`prio prio-${l.priority}`}>{l.priority}</span>
-              <div>
-                <b>{l.company}</b>
-                <span>
-                  {l.role}, {l.county} · {l.verdict}
-                </span>
-                <span>
-                  {l.weight} kg, {String(l.rate).replace('.', ',')} găleți/min, {l.shifts} schimburi · sursa {l.source}
-                </span>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
-      <button type="button" className="primary" disabled={!leads.length} onClick={() => downloadCsv(leads)}>
-        Exportă CSV pentru CRM
-      </button>
-      <button
-        type="button"
-        className="link"
-        disabled={!leads.length}
-        onClick={() => {
-          if (window.confirm('Ștergi cererile de test din acest browser?')) {
-            clearLeads();
-            setLeads([]);
-          }
-        }}
-      >
-        Șterge cererile de test
       </button>
     </div>
   );
@@ -125,7 +75,7 @@ export const EXAMPLES = {
   outside: { weight: 22, rate: 9.5, perPallet: 36, shifts: 3, handle: 'nu' },
 };
 
-export function Examples({ onPick, onLeads, onBack }) {
+export function Examples({ onPick, onBack }) {
   const heading = useFocusRef();
   return (
     <div className="screen examples">
@@ -155,9 +105,9 @@ export function Examples({ onPick, onLeads, onBack }) {
       <p className="fine">
         Pentru formularul de cerere: CUI fictiv valid 12345674, invalid 12345675. E-mail de test: test@fabrica-demo.ro.
       </p>
-      <button type="button" className="link" onClick={onLeads}>
-        Cereri salvate (demo CRM)
-      </button>
+      <a className="link" href="#crm">
+        CRM demo: cererile și pașii de follow-up
+      </a>
     </div>
   );
 }

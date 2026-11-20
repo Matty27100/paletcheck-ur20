@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "node --test tests/calc.test.mjs",
+    "test": "node --test tests/calc.test.mjs tests/leads.test.mjs",
     "facts": "node scripts/export-facts.mjs",
     "prebuild": "npm run test && npm run facts",
     "deploy": "sh scripts/deploy.sh"
