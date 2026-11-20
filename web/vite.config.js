@@ -43,6 +43,7 @@ export default defineConfig({
     structuredData,
     VitePWA({
       registerType: 'autoUpdate',
+      injectRegister: false, // registered from src/main.jsx, so only the public tool installs
       includeAssets: ['icons/*.png', 'llms.txt', 'og.jpg'],
       manifest: {
         name: 'Verificare UR20 · Tech-Con',

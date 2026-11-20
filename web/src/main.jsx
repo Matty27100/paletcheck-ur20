@@ -6,6 +6,9 @@ import './crm.css';
 import './impact.css';
 import './assistant.css';
 import App from './App.jsx';
+import { registerSW } from 'virtual:pwa-register';
+
+registerSW({ immediate: true });
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
