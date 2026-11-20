@@ -55,7 +55,7 @@ function Tool() {
     applyTheme(t);
     saveTheme(t);
   };
-  const [impactOptions, setImpactOptions] = useState({ operatorsBefore: IMPACT_DEFAULTS.operatorsBefore, monthlyCostEur: IMPACT_DEFAULTS.monthlyCostEur });
+  const [impactOptions, setImpactOptions] = useState({ operatorsBefore: null, monthlyCostEur: null, costIsAverage: false });
   const [stats, setStats] = useState({ counts: [0, 0], status: ['filling', 'filling'], active: 0 });
   const onStats = useCallback((s) => setStats(s), []);
 

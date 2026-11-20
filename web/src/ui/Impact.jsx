@@ -1,5 +1,5 @@
 import { AssistantButton } from './Assistant.jsx';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { fmt, testedRateFor } from '../lib/calc.js';
 import { IMPACT_DEFAULTS, impact } from '../lib/impact.js';
 
@@ -30,6 +30,11 @@ export default function Impact({ answers, options, onOptions, onCells, onBack, o
   const heading = useRef(null);
   useEffect(() => heading.current?.focus({ preventScroll: true }), []);
   const r = impact(answers, { ...options, cells: answers.cells ?? undefined });
+  const teamReady = Boolean(options.operatorsBefore && options.monthlyCostEur);
+  const [costText, setCostText] = useState(options.monthlyCostEur ? String(options.monthlyCostEur) : '');
+  const [costTouched, setCostTouched] = useState(false);
+  const costError =
+    costTouched && costText && !options.monthlyCostEur ? 'Introduceți o sumă între 500 și 6.000 EUR pe lună.' : null;
   const tested = testedRateFor(answers.weight);
 
   return (
@@ -43,17 +48,59 @@ export default function Impact({ answers, options, onOptions, onCells, onBack, o
         Față de cum lucrați acum
       </h1>
 
-      <fieldset className="field">
-        <legend>Câți oameni paletizează acum, pe schimb?</legend>
-        <div className="seg">
-          {[1, 2, 3, 4].map((n) => (
-            <button key={n} type="button" aria-pressed={options.operatorsBefore === n} onClick={() => onOptions({ operatorsBefore: n })}>
-              {n}
-            </button>
-          ))}
+      <section className="team" aria-labelledby="team-title">
+        <h2 id="team-title">Echipa ta de acum</h2>
+        <fieldset className="field">
+          <legend>Câți oameni paletizează pe un schimb?</legend>
+          <div className="seg">
+            {[1, 2, 3, 4].map((n) => (
+              <button key={n} type="button" aria-pressed={options.operatorsBefore === n} onClick={() => onOptions({ operatorsBefore: n })}>
+                {n}
+              </button>
+            ))}
+          </div>
+        </fieldset>
+        <div className="field">
+          <label htmlFor="team-cost">Cât costă un om pe lună, cu salariu și taxe?</label>
+          <div className="input-unit">
+            <input
+              id="team-cost"
+              inputMode="numeric"
+              autoComplete="off"
+              placeholder="1.500"
+              value={costText}
+              aria-invalid={!!costError}
+              aria-describedby="team-cost-msg"
+              onChange={(e) => {
+                setCostText(e.target.value);
+                const v = Number(e.target.value.replace(/[.\s]/g, '').replace(',', '.'));
+                if (v >= 500 && v <= 6000) onOptions({ monthlyCostEur: v, costIsAverage: false });
+                else onOptions({ monthlyCostEur: null, costIsAverage: false });
+              }}
+              onBlur={() => setCostTouched(true)}
+            />
+            <span>EUR / lună</span>
+          </div>
+          <p id="team-cost-msg" className={costError ? 'field-error' : 'field-hint'}>
+            {costError || 'Costul total pentru firmă: salariul brut plus contribuțiile angajatorului.'}
+          </p>
+          <button
+            type="button"
+            className={`chip-btn ${options.costIsAverage ? 'chip-primary' : ''}`}
+            onClick={() => {
+              setCostText(String(IMPACT_DEFAULTS.monthlyCostEur));
+              setCostTouched(false);
+              onOptions({ monthlyCostEur: IMPACT_DEFAULTS.monthlyCostEur, costIsAverage: true });
+            }}
+          >
+            Nu știu: folosește media din industrie ({IMPACT_DEFAULTS.monthlyCostEur.toLocaleString('ro-RO')} EUR)
+          </button>
         </div>
-      </fieldset>
+        {!teamReady && <p className="team-wait">Răspunde la cele două întrebări ca să vezi timpul și banii economisiți.</p>}
+      </section>
 
+      {teamReady && (
+        <>
       <h2>Timp</h2>
       <div className="versus" role="table" aria-label="Timp de muncă acum comparat cu celula UR20">
         <div role="row" className="versus-head">
@@ -107,6 +154,9 @@ export default function Impact({ answers, options, onOptions, onCells, onBack, o
         </div>
       </dl>
 
+        </>
+      )}
+
       <h2>Câte celule UR20</h2>
       <div className="seg">
         {[1, 2, 3].map((n) => (
@@ -133,14 +183,20 @@ export default function Impact({ answers, options, onOptions, onCells, onBack, o
             finală vine după evaluarea tehnică.
           </p>
         </div>
-        <div>
-          <dt>Economie estimată pe an</dt>
-          <dd className="better">{eur(r.savingYear)}</dd>
-        </div>
-        <div>
-          <dt>Se recuperează în</dt>
-          <dd>{years(r.paybackYears)}</dd>
-        </div>
+        {teamReady ? (
+          <>
+            <div>
+              <dt>Economie estimată pe an</dt>
+              <dd className="better">{eur(r.savingYear)}</dd>
+            </div>
+            <div>
+              <dt>Se recuperează în</dt>
+              <dd>{years(r.paybackYears)}</dd>
+            </div>
+          </>
+        ) : (
+          <p className="money-wait">Economia pe an și timpul de recuperare apar după ce răspunzi despre echipa ta.</p>
+        )}
         <div>
           <dt>Pe {r.horizonYears} ani, pe lună</dt>
           <dd>{eur(r.perMonthOverHorizon)}</dd>
@@ -151,19 +207,12 @@ export default function Impact({ answers, options, onOptions, onCells, onBack, o
         </div>
       </dl>
 
-      <Stepper
-        label="Cost total pe operator, pe lună"
-        value={options.monthlyCostEur}
-        step={100}
-        min={800}
-        max={4000}
-        unit="EUR"
-        onChange={(v) => onOptions({ monthlyCostEur: v })}
-      />
       <p className="fine">
-        Estimare, nu garanție. Implicit: {IMPACT_DEFAULTS.monthlyCostEur.toLocaleString('ro-RO')} EUR pe lună cu taxele angajatorului
-        (salariul mediu net din industria alimentară, aprilie 2026, INS: 4.373 lei), {IMPACT_DEFAULTS.workingDays} zile lucrătoare pe an.
-        Nu includ energia, mentenanța, finanțarea, înfolierea sau transportul paleților.
+        Estimare din datele tale, nu garanție. {options.costIsAverage
+          ? `Costul pe om este media din industria alimentară (salariul mediu net, aprilie 2026, INS: 4.373 lei, plus taxe). `
+          : ''}
+        Calculul folosește {IMPACT_DEFAULTS.workingDays} zile lucrătoare pe an și nu include energia, mentenanța, finanțarea, înfolierea
+        sau transportul paleților.
       </p>
 
       <div className="cta-bar">

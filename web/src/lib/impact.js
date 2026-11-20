@@ -19,7 +19,9 @@ export const PRICE_PER_CELL = FACTS.finance.price; // scenario price: integrated
 export const cellsNeeded = (weight, rate) => Math.max(1, Math.ceil(rate / testedRateFor(weight) - 1e-9));
 
 export function impact(line, opts = {}) {
-  const o = { ...IMPACT_DEFAULTS, ...opts };
+  // Unanswered team questions (null) fall back to the defaults; callers show those only once answered.
+  const given = Object.fromEntries(Object.entries(opts).filter(([, v]) => v !== null && v !== undefined));
+  const o = { ...IMPACT_DEFAULTS, ...given };
   const { weight, rate, perPallet, shifts, shiftHours = FACTS.assumptions.shiftHours } = line;
   const cells = Math.min(3, Math.max(1, opts.cells ?? cellsNeeded(weight, rate)));
   const shiftMin = shiftHours * 60;

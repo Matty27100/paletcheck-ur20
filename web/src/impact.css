@@ -244,3 +244,34 @@
   line-height: 1.3;
   color: var(--muted);
 }
+
+/* Comparison: the team questions come first */
+.team {
+  margin: 0 0 8px;
+  padding: 14px 16px 6px;
+  border: 1.5px solid var(--blue-light);
+  border-radius: 16px;
+}
+
+.team h2 {
+  margin: 0 0 10px;
+}
+
+.team .chip-btn {
+  margin-top: 10px;
+  height: auto;
+  min-height: 40px;
+  padding: 8px 14px;
+  text-align: left;
+}
+
+.team-wait,
+.money-wait {
+  margin: 4px 0 10px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.money-wait {
+  grid-column: 1 / -1;
+}
