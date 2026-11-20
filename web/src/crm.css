@@ -207,6 +207,11 @@ a.link {
   gap: 6px;
   overflow-x: auto;
   padding-bottom: 8px;
+  scrollbar-width: none;
+}
+
+.filters::-webkit-scrollbar {
+  display: none;
 }
 
 .filters button {

@@ -95,7 +95,7 @@ export default function Assistant({ answers, assessment, onApply }) {
       ]);
     } catch {
       setMode('offline');
-      setItems((x) => [...x, { role: 'note', text: 'Asistentul AI nu răspunde acum; continui cu răspunsuri din fișa tehnică.' }]);
+      setItems((x) => [...x, { role: 'note', text: 'Continui cu răspunsuri din fișa tehnică.' }]);
       offline(question);
     } finally {
       setBusy(false);
@@ -120,7 +120,7 @@ export default function Assistant({ answers, assessment, onApply }) {
             <header>
               <div>
                 <h2 id="assistant-title">Asistent</h2>
-                <p>{mode === 'ai' ? 'Răspunsuri generate de AI (Claude). Verifică cifrele la evaluarea tehnică.' : 'Mod offline: răspunsuri din fișa tehnică, fără AI.'}</p>
+                <p>{mode === 'ai' ? 'Asistent AI. Inginerul confirmă cifrele la evaluarea tehnică.' : 'Răspunsuri din fișa tehnică a celulei UR20.'}</p>
               </div>
               <button type="button" className="assistant-close" onClick={() => setOpen(false)} aria-label="Închide asistentul">
                 ×

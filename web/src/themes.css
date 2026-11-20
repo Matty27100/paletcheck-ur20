@@ -1,0 +1,542 @@
+/* Glass directions: the factory fills the screen, the task floats over it on frosted panels.
+   Shared structure first, then the light and dark tones. */
+
+:root[data-theme^='glass'] .demo {
+  display: block;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+:root[data-theme^='glass'] .stage {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  height: 100svh;
+  min-height: 0;
+  aspect-ratio: auto;
+  border-radius: 0;
+}
+
+:root[data-theme^='glass'] .stage::before {
+  height: 96px;
+}
+
+:root[data-theme^='glass'] .card {
+  position: relative;
+  z-index: 2;
+  margin: 38svh 10px 12px;
+  min-height: 0;
+  padding: 16px 18px 22px;
+  border-radius: 28px;
+  -webkit-backdrop-filter: blur(30px) saturate(115%);
+  backdrop-filter: blur(30px) saturate(115%);
+}
+
+:root[data-theme^='glass'] .cta-bar {
+  margin: 18px -18px -22px;
+  padding: 14px 18px calc(16px + env(safe-area-inset-bottom));
+  border-radius: 0 0 28px 28px;
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  backdrop-filter: blur(20px) saturate(160%);
+}
+
+:root[data-theme^='glass'] .pill,
+:root[data-theme^='glass'] .assistant-fab {
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  backdrop-filter: blur(14px) saturate(160%);
+}
+
+:root[data-theme^='glass'] .assistant-fab {
+  bottom: auto;
+  top: calc(max(12px, env(safe-area-inset-top)) + 26px);
+  right: 14px;
+}
+
+:root[data-theme^='glass'] .assistant {
+  -webkit-backdrop-filter: blur(28px) saturate(170%);
+  backdrop-filter: blur(28px) saturate(170%);
+}
+
+:root[data-theme^='glass'] h1 {
+  font-weight: 650;
+  letter-spacing: -0.025em;
+}
+
+:root[data-theme^='glass'] .options button,
+:root[data-theme^='glass'] .seg button,
+:root[data-theme^='glass'] .secondary button,
+:root[data-theme^='glass'] .chips button,
+:root[data-theme^='glass'] .numfield-row button,
+:root[data-theme^='glass'] .mini-stepper button,
+:root[data-theme^='glass'] .secondary-btn {
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+@media (min-width: 900px) {
+  :root[data-theme^='glass'] .card {
+    width: 440px;
+    margin: 28px 0 28px max(28px, calc(50vw - 600px));
+    padding: 22px 26px 30px;
+  }
+
+  :root[data-theme^='glass'] .cta-bar {
+    margin: 18px -26px -30px;
+    padding: 14px 26px 18px;
+  }
+
+  :root[data-theme^='glass'] .assistant-fab {
+    top: auto;
+    bottom: 28px;
+    right: 28px;
+  }
+}
+
+/* Light glass: frosted white over the lit hall, near-black type, ink buttons */
+:root[data-theme='glass'] {
+  --blue: #0b1220;
+  --blue-dark: #0b1220;
+  --muted: #4a5568;
+  --blue-light: rgba(11, 18, 32, 0.1);
+  --mist: rgba(255, 255, 255, 0.5);
+  --aqua: #6f8fd8;
+}
+
+:root[data-theme='glass'] body {
+  background: #d6dade;
+}
+
+:root[data-theme='glass'] .card {
+  background: rgba(246, 247, 249, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow: 0 24px 60px rgba(11, 18, 32, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+:root[data-theme='glass'] .brand {
+  color: #1226aa;
+}
+
+:root[data-theme='glass'] .stage::before {
+  background: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0));
+}
+
+:root[data-theme='glass'] .pill {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+:root[data-theme='glass'] .options button,
+:root[data-theme='glass'] .seg button,
+:root[data-theme='glass'] .secondary button,
+:root[data-theme='glass'] .chips button,
+:root[data-theme='glass'] .numfield-row button,
+:root[data-theme='glass'] .mini-stepper button,
+:root[data-theme='glass'] .secondary-btn,
+:root[data-theme='glass'] .field input,
+:root[data-theme='glass'] .field select {
+  background: rgba(255, 255, 255, 0.55);
+  border-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 1px 2px rgba(11, 18, 32, 0.06);
+}
+
+:root[data-theme='glass'] .options button:hover,
+:root[data-theme='glass'] .seg button:hover {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+:root[data-theme='glass'] .options button[aria-pressed='true'],
+:root[data-theme='glass'] .seg button[aria-pressed='true'] {
+  background: #0b1220;
+  border-color: #0b1220;
+  color: #fff;
+}
+
+:root[data-theme='glass'] .numfield-row input {
+  background: rgba(255, 255, 255, 0.5);
+  border-color: rgba(255, 255, 255, 0.9);
+}
+
+:root[data-theme='glass'] .bar {
+  background: rgba(11, 18, 32, 0.1);
+}
+
+:root[data-theme='glass'] .figures,
+:root[data-theme='glass'] .versus > div,
+:root[data-theme='glass'] .details details,
+:root[data-theme='glass'] .faq details {
+  border-color: rgba(11, 18, 32, 0.1);
+}
+
+:root[data-theme='glass'] .impact-link {
+  background-color: rgba(255, 255, 255, 0.55);
+  border-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 1px 2px rgba(11, 18, 32, 0.06);
+}
+
+:root[data-theme='glass'] .cta-bar {
+  background: rgba(255, 255, 255, 0.55);
+  border-top-color: rgba(255, 255, 255, 0.8);
+}
+
+:root[data-theme='glass'] .assistant-fab {
+  background-color: rgba(11, 18, 32, 0.78);
+  box-shadow: 0 8px 24px rgba(11, 18, 32, 0.25);
+}
+
+:root[data-theme='glass'] .assistant {
+  background: rgba(255, 255, 255, 0.78);
+}
+
+:root[data-theme='glass'] .msg-bot {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+:root[data-theme='glass'] .msg-me {
+  background: #0b1220;
+}
+
+/* Dark glass: night shift — the hall falls into shadow, smoked panels, light type */
+:root[data-theme='glass-dark'] {
+  color-scheme: dark;
+  --blue: #f3f5f8;
+  --blue-dark: #eef2f7;
+  --muted: #a4aebc;
+  --blue-light: rgba(255, 255, 255, 0.12);
+  --mist: rgba(255, 255, 255, 0.06);
+  --aqua: #8fb1ff;
+  --green: #5fd39a;
+  --red: #ff5c7a;
+  --amber: #ffbe5c;
+}
+
+:root[data-theme='glass-dark'] body {
+  background: #12161c;
+  color: var(--blue-dark);
+}
+
+:root[data-theme='glass-dark'] .card {
+  background: rgba(16, 19, 24, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+:root[data-theme='glass-dark'] .stage::before {
+  background: linear-gradient(rgba(10, 12, 16, 0.7), rgba(10, 12, 16, 0));
+}
+
+:root[data-theme='glass-dark'] .brand {
+  color: #fff;
+}
+
+:root[data-theme='glass-dark'] .note {
+  color: var(--muted);
+}
+
+:root[data-theme='glass-dark'] .pill {
+  background: rgba(18, 22, 28, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--blue-dark);
+}
+
+:root[data-theme='glass-dark'] .options button,
+:root[data-theme='glass-dark'] .seg button,
+:root[data-theme='glass-dark'] .secondary button,
+:root[data-theme='glass-dark'] .chips button,
+:root[data-theme='glass-dark'] .numfield-row button,
+:root[data-theme='glass-dark'] .mini-stepper button,
+:root[data-theme='glass-dark'] .secondary-btn,
+:root[data-theme='glass-dark'] .field input,
+:root[data-theme='glass-dark'] .field select,
+:root[data-theme='glass-dark'] .numfield-row input {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: var(--blue-dark);
+}
+
+:root[data-theme='glass-dark'] .options button:hover,
+:root[data-theme='glass-dark'] .seg button:hover {
+  background: rgba(255, 255, 255, 0.11);
+}
+
+:root[data-theme='glass-dark'] .options button[aria-pressed='true'],
+:root[data-theme='glass-dark'] .seg button[aria-pressed='true'],
+:root[data-theme='glass-dark'] .primary,
+:root[data-theme='glass-dark'] .chip-primary,
+:root[data-theme='glass-dark'] .msg-me {
+  background: #f3f5f8;
+  border-color: #f3f5f8;
+  color: #0b1220;
+}
+
+:root[data-theme='glass-dark'] .options button small {
+  color: var(--muted);
+}
+
+:root[data-theme='glass-dark'] .headline-stat {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+:root[data-theme='glass-dark'] .headline-stat span {
+  color: var(--muted);
+}
+
+:root[data-theme='glass-dark'] .badge-ok {
+  background: rgba(95, 211, 154, 0.14);
+}
+
+:root[data-theme='glass-dark'] .badge-check {
+  background: rgba(255, 190, 92, 0.14);
+}
+
+:root[data-theme='glass-dark'] .badge-no {
+  background: rgba(255, 92, 122, 0.14);
+}
+
+:root[data-theme='glass-dark'] .impact-link {
+  background-color: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+:root[data-theme='glass-dark'] .cta-bar {
+  background: rgba(18, 22, 28, 0.55);
+  border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+:root[data-theme='glass-dark'] .assistant-fab {
+  background-color: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: none;
+}
+
+:root[data-theme='glass-dark'] .assistant {
+  background: rgba(22, 26, 33, 0.82);
+  color: var(--blue-dark);
+}
+
+:root[data-theme='glass-dark'] .assistant-close,
+:root[data-theme='glass-dark'] .msg-bot {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+:root[data-theme='glass-dark'] .toast,
+:root[data-theme='glass-dark'] .cmp-track {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+:root[data-theme='glass-dark'] .link-quiet {
+  color: var(--muted);
+}
+
+@media (min-width: 900px) {
+  :root[data-theme^='glass'] .brand,
+  :root[data-theme^='glass'] .pills {
+    left: calc(max(28px, 50vw - 600px) + 468px);
+  }
+}
+
+:root[data-theme='glass-dark'] .impact-link {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M6 3l5 5-5 5' fill='none' stroke='%23F3F5F8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+/* Phone: the panel is a sheet anchored to the bottom, so no stray floor shows under it */
+@media (max-width: 899px) {
+  :root[data-theme^='glass'] .card {
+    min-height: calc(62svh + 1px);
+    margin: 38svh 0 0;
+    border-radius: 28px 28px 0 0;
+    border-bottom: 0;
+    padding-bottom: calc(26px + env(safe-area-inset-bottom));
+  }
+
+  :root[data-theme^='glass'] .cta-bar {
+    border-radius: 0;
+  }
+
+  :root[data-theme^='glass'] .note {
+    top: calc(38svh - 26px);
+    left: auto;
+    right: 16px;
+  }
+
+  :root[data-theme^='glass'] .assistant-fab {
+    top: calc(max(12px, env(safe-area-inset-top)) + 52px);
+  }
+}
+
+/* Light/dark switch */
+.theme-toggle {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+
+.theme-toggle svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+:root[data-theme='glass'] .theme-toggle {
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.6);
+  color: #0b1220;
+}
+
+:root[data-theme='glass-dark'] .theme-toggle {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(18, 22, 28, 0.6);
+  color: #f3f5f8;
+}
+
+.stage-toggle {
+  position: absolute;
+  z-index: 3;
+  top: max(8px, env(safe-area-inset-top));
+  right: 14px;
+}
+
+
+@media (min-width: 900px) {
+  :root[data-theme^='glass'] .note {
+    top: auto;
+    bottom: 34px;
+    left: calc(max(28px, 50vw - 600px) + 468px);
+  }
+
+  .stage-toggle {
+    top: 20px;
+    right: 28px;
+  }
+}
+
+/* Owners' area in glass: soft backdrop, frosted cards */
+:root[data-theme='glass'] .gate,
+:root[data-theme='glass'] .crm {
+  background: none;
+}
+
+:root[data-theme='glass'] body:has(.gate),
+:root[data-theme='glass'] body:has(.crm) {
+  background: radial-gradient(120% 80% at 80% 0%, #eef1f4 0%, #d6dade 55%, #c6cbd1 100%) fixed;
+}
+
+:root[data-theme='glass-dark'] body:has(.gate),
+:root[data-theme='glass-dark'] body:has(.crm) {
+  background: radial-gradient(120% 80% at 80% 0%, #1c222b 0%, #12161c 55%, #0b0e12 100%) fixed;
+}
+
+:root[data-theme='glass'] .gate-card,
+:root[data-theme='glass'] .crm-stats > div,
+:root[data-theme='glass'] .crm-list,
+:root[data-theme='glass'] .lead-detail {
+  background: rgba(255, 255, 255, 0.66);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 18px 44px rgba(11, 18, 32, 0.1);
+  -webkit-backdrop-filter: blur(24px) saturate(130%);
+  backdrop-filter: blur(24px) saturate(130%);
+}
+
+:root[data-theme='glass-dark'] .gate-card,
+:root[data-theme='glass-dark'] .crm-stats > div,
+:root[data-theme='glass-dark'] .crm-list,
+:root[data-theme='glass-dark'] .lead-detail {
+  background: rgba(22, 26, 33, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.4);
+  color: var(--blue-dark);
+}
+
+:root[data-theme='glass-dark'] .chip-btn,
+:root[data-theme='glass-dark'] .filters button,
+:root[data-theme='glass-dark'] .stage-picker button,
+:root[data-theme='glass-dark'] .note-form textarea,
+:root[data-theme='glass-dark'] .gate-form input {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: var(--blue-dark);
+}
+
+:root[data-theme='glass-dark'] .filters button[aria-pressed='true'],
+:root[data-theme='glass-dark'] .stage-picker button[aria-pressed='true'],
+:root[data-theme='glass-dark'] .chip-btn.chip-primary {
+  background: #f3f5f8;
+  border-color: #f3f5f8;
+  color: #0b1220;
+}
+
+:root[data-theme='glass'] .chip-btn,
+:root[data-theme='glass'] .filters button,
+:root[data-theme='glass'] .stage-picker button,
+:root[data-theme='glass'] .note-form textarea,
+:root[data-theme='glass'] .gate-form input {
+  background: rgba(255, 255, 255, 0.6);
+  border-color: rgba(11, 18, 32, 0.12);
+}
+
+:root[data-theme='glass'] .filters button[aria-pressed='true'],
+:root[data-theme='glass'] .stage-picker button[aria-pressed='true'],
+:root[data-theme='glass'] .chip-btn.chip-primary {
+  background: #0b1220;
+  border-color: #0b1220;
+  color: #fff;
+}
+
+:root[data-theme^='glass'] .lead-row.is-active {
+  background: var(--mist);
+}
+
+:root[data-theme='glass-dark'] .stage-badge,
+:root[data-theme='glass-dark'] .sample-tag,
+:root[data-theme='glass-dark'] .draft {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--blue-dark);
+}
+
+:root[data-theme='glass-dark'] .bypass-badge,
+:root[data-theme='glass-dark'] .access-alert {
+  background: rgba(255, 190, 92, 0.12);
+  border-color: rgba(255, 190, 92, 0.35);
+  color: #ffd08a;
+}
+
+:root[data-theme='glass-dark'] .resp {
+  background: rgba(95, 211, 154, 0.12);
+}
+
+:root[data-theme='glass-dark'] .resp.is-late {
+  background: rgba(255, 92, 122, 0.12);
+}
+
+:root[data-theme='glass-dark'] .contact a,
+:root[data-theme='glass-dark'] .gate-card .fine a {
+  color: #cfe0ff;
+}
+
+:root[data-theme='glass'] .brand-inline {
+  color: #1226aa;
+}
+
+:root[data-theme='glass-dark'] .brand-inline {
+  color: #fff;
+}
+
+.gate-card {
+  position: relative;
+}
+
+.gate-toggle {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+}

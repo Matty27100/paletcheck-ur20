@@ -8,7 +8,7 @@
 .gate-card {
   width: 100%;
   max-width: 420px;
-  padding: 26px 22px 24px;
+  padding: 26px 22px 22px;
   border-radius: 24px;
   background: var(--white);
 }
@@ -21,38 +21,71 @@
   margin-top: 8px;
 }
 
-.gate-form input:disabled {
-  background: var(--mist);
-  color: var(--muted);
-}
-
-.gate-form .primary:disabled {
-  background: var(--blue-light);
-  color: var(--muted);
-}
-
-.gate-note {
-  margin: 12px 0 18px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  background: var(--mist);
-  font-size: 14px;
-  color: var(--muted);
-}
-
-.gate-demo {
-  margin-top: 0;
+.gate-card .fine {
+  margin-top: 18px;
+  text-align: center;
 }
 
 .gate-card .fine a {
   color: var(--blue);
 }
 
-.demo-banner {
-  margin: 0;
-  padding: 8px 16px;
-  background: #fdf0d9;
-  text-align: center;
+.access-alert {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 1.5px solid #f0c27a;
+  border-radius: 14px;
+  background: #fdf3e2;
   font-size: 14px;
-  color: var(--amber);
+  color: #6b4300;
+  animation: alert-in 0.18s ease-out;
+}
+
+@keyframes alert-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .access-alert {
+    animation: none;
+  }
+}
+
+.access-alert p {
+  margin: 0 0 8px;
+}
+
+.access-title {
+  font-weight: 700;
+}
+
+.access-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.bypass-badge {
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #fdf3e2;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: #8a5a00;
+  vertical-align: 2px;
+}
+
+.sample-tag {
+  margin-left: 6px;
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: var(--mist);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  vertical-align: 1px;
 }

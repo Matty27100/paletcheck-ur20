@@ -5,7 +5,8 @@ import Cell from './Cell.jsx';
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 
 // The 3D cell. Sideways drags rotate the view; vertical swipes still scroll the page.
-export default function CellStage({ weight, rate, perPallet, speed, onStats, cells = 1 }) {
+// `look` is the page theme: light or dark glass, both with full-screen framing.
+export default function CellStage({ weight, rate, perPallet, speed, onStats, cells = 1, look = 'light' }) {
   const wrap = useRef(null);
   const drag = useRef({ on: false, x: 0, az: 0 });
   const [visible, setVisible] = useState(true);
@@ -70,6 +71,7 @@ export default function CellStage({ weight, rate, perPallet, speed, onStats, cel
             frozen={reduced}
             drag={drag}
             onStats={onStats}
+            look={look}
           />
         ))}
       </Canvas>

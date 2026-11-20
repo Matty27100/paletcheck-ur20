@@ -205,7 +205,7 @@ export default function Questions({ index, answers, onAnswer, onNext, onBack, on
 
       {index === 0 && (
         <button type="button" className="link link-quiet" onClick={onExamples}>
-          Date de test pentru juriu
+          Vezi exemple de linii
         </button>
       )}
     </div>

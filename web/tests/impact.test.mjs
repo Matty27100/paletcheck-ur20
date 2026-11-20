@@ -45,3 +45,15 @@ test('assumptions are editable', () => {
   assert.ok(r.savingYear > impact(line).savingYear);
   assert.equal(impact({ ...line, rate: 0.1 }, { operatorsBefore: 0 }).paybackYears, null);
 });
+
+test('time view: operator minutes per pallet, hours per day, days per year', () => {
+  const r = impact(line);
+  // 44 / 6 = 7.33 min per pallet x 2 operators = 14.7 person-minutes before, 3 after
+  assert.equal(r.personMinPerPalletBefore.toFixed(1), '14.7');
+  assert.equal(r.personMinPerPalletAfter, 3);
+  assert.equal(Math.round(r.timeCut * 100), 80);
+  assert.equal(r.hoursPerDayBefore, 32);
+  assert.equal(r.hoursPerDayAfter.toFixed(1), '6.5');
+  assert.equal(Math.round(r.personDaysFreedYear), Math.round(r.hoursFreedYear / 8));
+  assert.equal(r.deliveryMonths, 4);
+});

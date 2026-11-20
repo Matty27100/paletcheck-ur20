@@ -3,6 +3,7 @@ import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { ARM, solveIK } from './kinematics.js';
 import Factory from './Factory.jsx';
+import { concreteTexture } from './textures.js';
 import { PHASE, lerpAngle, smooth, toolPath } from './motion.js';
 import { PALLET, palletPattern } from './layout.js';
 
@@ -102,7 +103,7 @@ function Conveyor({ mat }) {
   );
 }
 
-export default function Cell({ weight, rate, perPallet, speed, frozen, drag, onStats, index = 0, count = 1 }) {
+export default function Cell({ weight, rate, perPallet, speed, frozen, drag, onStats, index = 0, count = 1, look = 'default' }) {
   const env = index === 0; // the first cell also draws the hall, the lights and drives the camera
   const pattern = useMemo(() => palletPattern(weight, perPallet), [weight, perPallet]);
   const { bucket } = pattern;
@@ -171,6 +172,18 @@ export default function Cell({ weight, rate, perPallet, speed, frozen, drag, onS
   // Shadows on everything solid; the floor and pallets also receive them.
   const scene = useThree((state) => state.scene);
   const quality = useRef({ frames: 0, time: 0, done: false });
+  const framing = useRef({ key: '' });
+  const dark = look === 'dark';
+  const haze = dark ? '#0E1116' : '#D6DADE';
+  useEffect(() => {
+    if (!env) return undefined;
+    const tex = concreteTexture(dark);
+    mat.floor.map = tex;
+    mat.floor.color.set('#ffffff');
+    mat.floor.roughness = 0.82;
+    mat.floor.needsUpdate = true;
+    return () => tex.dispose();
+  }, [dark, mat, env]);
   useEffect(() => {
     scene.traverse((o) => {
       if (!o.isMesh || o.userData.bg) return;
@@ -344,7 +357,23 @@ export default function Cell({ weight, rate, perPallet, speed, frozen, drag, onS
     const { camera, size, clock } = state;
     const cx = ((count - 1) * CELL_SPACING) / 2;
     const target = [CAMERA_TARGET[0] + cx, CAMERA_TARGET[1], CAMERA_TARGET[2]];
-    const aspect = size.width / size.height;
+    // Full-screen looks: the scene sits behind a panel, so frame the cell in the part
+    // left visible (top of a phone screen, right of the panel on a wide screen).
+    let aspect = size.width / size.height;
+    const view = framing.current;
+    const key = `${look}:${size.width}x${size.height}`;
+    if (view.key !== key) {
+      view.key = key;
+      // On a tall phone screen only the top 40% is visible: widen the lens so the cell
+      // keeps the size it has in a 40%-high stage, then shift it into that band.
+      const phone = look !== 'default' && size.width < 900;
+      camera.fov = phone ? (2 * Math.atan(Math.tan((15 * Math.PI) / 180) / 0.4) * 180) / Math.PI : 30;
+      camera.updateProjectionMatrix();
+      if (look === 'default') camera.clearViewOffset();
+      else if (phone) camera.setViewOffset(size.width, size.height, 0, size.height * 0.3, size.width, size.height);
+      else camera.setViewOffset(size.width, size.height, -Math.min(260, size.width * 0.2), 0, size.width, size.height);
+    }
+    if (look !== 'default') aspect = size.width < 900 ? size.width / (size.height * 0.4) : (size.width - 480) / size.height;
     // Far enough back that both pallets fit the width, whatever the stage's shape.
     const radius = Math.max(7 + (count - 1) * 2.4, (9.6 + (count - 1) * 4.6) / aspect);
     const azimuth = 0.62 + (drag?.current?.az ?? 0) + (frozen ? 0 : Math.sin(clock.elapsedTime * 0.25) * 0.16);
@@ -364,13 +393,13 @@ export default function Cell({ weight, rate, perPallet, speed, frozen, drag, onS
     <>
       {env && (
         <>
-      <color attach="background" args={['#D6DADE']} />
-      <fog attach="fog" args={['#D6DADE', 9 + (count - 1) * 2, 23 + (count - 1) * 4]} />
-      <Factory count={count} />
-      <hemisphereLight args={['#ffffff', '#b4bcc6', 1.25]} />
+      <color attach="background" args={[haze]} />
+      <fog attach="fog" args={[haze, (dark ? 7 : 9) + (count - 1) * 2, (dark ? 17 : 23) + (count - 1) * 4]} />
+      <Factory count={count} dark={dark} />
+      <hemisphereLight args={dark ? ['#dfe7f2', '#2a313a', 0.85] : ['#ffffff', '#b4bcc6', 1.25]} />
       <directionalLight
         position={[3.5, 6, 4]}
-        intensity={1.7}
+        intensity={dark ? 1.9 : 1.7}
         castShadow
         shadow-mapSize={[1024, 1024]}
         shadow-bias={-0.0004}

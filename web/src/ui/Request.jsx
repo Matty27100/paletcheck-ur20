@@ -5,7 +5,7 @@ import { trafficSource, upsertLead } from '../lib/store.js';
 import { PREFERENCES } from '../lib/leads.js';
 
 const ROLES = ['Director de producție', 'Director general sau investiții', 'Inginer de proces sau mentenanță', 'Alt rol'];
-const DEMO_NOTE = 'Prototip de concurs: folosiți doar date fictive.';
+const DEMO_NOTE = 'Folosim datele doar ca să răspundem cererii tale.';
 
 function useFocus() {
   const ref = useRef(null);

@@ -39,7 +39,7 @@ export function describeLine(v) {
 
 const R = FACTS.reference;
 const TOPICS = [
-  [/pret|cost|cat costa|investit|bani|eur/, `Prețul orientativ din scenariul de lucru este ${FACTS.finance.price.toLocaleString('ro-RO')} EUR pe celulă integrată, cu instalare și instruire. Pe ecranul „Cât economisești față de acum” vezi investiția, economia estimată și în cât timp se recuperează, din ipoteze pe care le poți modifica. Oferta reală vine după evaluarea tehnică.`],
+  [/pret|cost|cat costa|investit|bani|eur/, `Prețul orientativ este ${FACTS.finance.price.toLocaleString('ro-RO')} EUR pe celulă integrată, cu instalare și instruire. Pe ecranul „Cât economisești față de acum” vezi investiția, economia estimată și în cât timp se recuperează, din ipoteze pe care le poți modifica. Oferta reală vine după evaluarea tehnică.`],
   [/livr|cat dureaza|termen|cand/, `Livrarea durează aproximativ ${R.deliveryMonths} luni de la comandă, pentru aplicația de referință. Termenul exact se stabilește după evaluarea tehnică.`],
   [/sigur|scaner|protect|accident|om(ul|enii)? in zona/, 'Trei scanere urmăresc accesul în zona celulei: când intră cineva, robotul încetinește sau se oprește, după configurație. Evaluarea riscurilor face parte din evaluarea tehnică.'],
   [/igien|aliment|curat/, 'Cerințele de igienă se verifică la evaluarea tehnică, împreună cu procedurile de operare ale fabricii.'],

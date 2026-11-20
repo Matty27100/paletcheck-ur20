@@ -1,4 +1,4 @@
-// Lead pipeline for the demo CRM: stages, the follow-up schedule, message drafts,
+// Lead pipeline for the CRM: stages, the follow-up schedule, message drafts,
 // response-time tracking and statistics. Pure functions; `now` is passed in for tests.
 
 import { fmt } from './calc.js';
@@ -187,7 +187,7 @@ export function stats(leads, now = Date.now()) {
   };
 }
 
-// Romanian CUI with a valid check digit, for fictitious demo companies.
+// Romanian CUI with a valid check digit, for the sample companies.
 export function makeCUI(base) {
   const digits = String(base).split('').map(Number);
   const key = [7, 5, 3, 2, 1, 7, 5, 3, 2];
@@ -208,17 +208,17 @@ export function demoLeads(now = Date.now()) {
     consentMarketing: false,
     role: 'Director de producție',
     ...o,
-    email: `contact@${o.slug}.demo`,
+    email: `achizitii@${o.slug}.example.com`,
     cui: makeCUI(o.cuiBase),
     createdAt: iso(o.ago),
     demo: true,
   });
   return [
-    mk({ slug: 'cremeria-demo', cuiBase: 4410271, company: 'Cremeria Demo SRL', county: 'Prahova', countyCode: 'PH', hub: 'Dragomirești-Deal', verdictLevel: 'ok', verdict: 'Linia ta se potrivește', priority: 'A', source: 'linkedin / lansare-2027', preference: 'demo', phone: '0700 000 101', ago: 18 * MIN, answers: { weight: 13, rate: 6.2, perPallet: 44, shifts: 3, handle: 'da' } }),
-    mk({ slug: 'panifico-demo', cuiBase: 3820117, company: 'Panifico Ingrediente Demo SRL', county: 'Cluj', countyCode: 'CJ', hub: 'Timișoara', verdictLevel: 'check', verdict: 'Se poate, cu o evaluare tehnică', priority: 'B', source: 'google / paletizare', preference: 'bucket', phone: '', ago: 95 * MIN, answers: { weight: 15, rate: 5, perPallet: 40, shifts: 2, handle: 'nustiu' } }),
-    mk({ slug: 'lactis-demo', cuiBase: 2955310, company: 'Lactis Moldova Demo SA', county: 'Iași', countyCode: 'IS', hub: 'Iași', verdictLevel: 'ok', verdict: 'Linia ta se potrivește', priority: 'A', source: 'direct', preference: 'call', phone: '0700 000 102', role: 'Director general sau investiții', ago: 3 * DAY, stage: 'evaluation', contactedAt: iso(3 * DAY - 40 * MIN), done: { call: iso(3 * DAY - 40 * MIN) }, notes: [{ at: iso(2 * DAY), text: 'Evaluare la fabrică marți; vor și separatoare automate, de discutat separat.' }], answers: { weight: 5, rate: 8, perPallet: 100, shifts: 2, handle: 'da' } }),
-    mk({ slug: 'sosuri-demo', cuiBase: 1677402, company: 'Sosuri Banat Demo SRL', county: 'Timiș', countyCode: 'TM', hub: 'Timișoara', verdictLevel: 'ok', verdict: 'Linia ta se potrivește', priority: 'A', source: 'webinar / martie', preference: 'demo', phone: '0700 000 103', ago: 12 * DAY, stage: 'offer', contactedAt: iso(12 * DAY - 25 * MIN), done: { call: iso(12 * DAY - 25 * MIN), casestudy: iso(10 * DAY) }, answers: { weight: 10, rate: 6.8, perPallet: 54, shifts: 3, handle: 'da' } }),
-    mk({ slug: 'vopsele-demo', cuiBase: 5120339, company: 'Vopsele Test Demo SRL', county: 'Argeș', countyCode: 'AG', hub: 'Dragomirești-Deal', verdictLevel: 'no', verdict: 'În afara domeniului testat', priority: 'C', source: 'google / galeti', preference: 'call', phone: '', role: 'Inginer de proces sau mentenanță', ago: 6 * DAY, stage: 'contacted', contactedAt: iso(6 * DAY - 3 * HOUR), answers: { weight: 22, rate: 9.5, perPallet: 36, shifts: 3, handle: 'nu' } }),
-    mk({ slug: 'dulciuri-demo', cuiBase: 6043285, company: 'Dulciuri Ardeal Demo SRL', county: 'Sibiu', countyCode: 'SB', hub: 'Timișoara', verdictLevel: 'ok', verdict: 'Linia ta se potrivește', priority: 'A', source: 'linkedin / lansare-2027', preference: 'visit', phone: '0700 000 104', ago: 40 * DAY, stage: 'won', contactedAt: iso(40 * DAY - 50 * MIN), done: { call: iso(40 * DAY - 50 * MIN), casestudy: iso(38 * DAY), next: iso(34 * DAY) }, notes: [{ at: iso(9 * DAY), text: 'Comandă semnată: 2 celule, livrare estimată în 4 luni.' }], answers: { weight: 13, rate: 7, perPallet: 44, shifts: 3, handle: 'da' } }),
+    mk({ slug: 'cremeria-nord', cuiBase: 4410271, company: 'Cremeria Nord SRL', county: 'Prahova', countyCode: 'PH', hub: 'Dragomirești-Deal', verdictLevel: 'ok', verdict: 'Linia ta se potrivește', priority: 'A', source: 'linkedin / lansare-2027', preference: 'demo', phone: '0700 000 101', ago: 18 * MIN, answers: { weight: 13, rate: 6.2, perPallet: 44, shifts: 3, handle: 'da' } }),
+    mk({ slug: 'panifico', cuiBase: 3820117, company: 'Panifico Ingrediente SRL', county: 'Cluj', countyCode: 'CJ', hub: 'Timișoara', verdictLevel: 'check', verdict: 'Se poate, cu o evaluare tehnică', priority: 'B', source: 'google / paletizare', preference: 'bucket', phone: '', ago: 95 * MIN, answers: { weight: 15, rate: 5, perPallet: 40, shifts: 2, handle: 'nustiu' } }),
+    mk({ slug: 'lactis-moldova', cuiBase: 2955310, company: 'Lactis Moldova SA', county: 'Iași', countyCode: 'IS', hub: 'Iași', verdictLevel: 'ok', verdict: 'Linia ta se potrivește', priority: 'A', source: 'direct', preference: 'call', phone: '0700 000 102', role: 'Director general sau investiții', ago: 3 * DAY, stage: 'evaluation', contactedAt: iso(3 * DAY - 40 * MIN), done: { call: iso(3 * DAY - 40 * MIN) }, notes: [{ at: iso(2 * DAY), text: 'Evaluare la fabrică marți; vor și separatoare automate, de discutat separat.' }], answers: { weight: 5, rate: 8, perPallet: 100, shifts: 2, handle: 'da' } }),
+    mk({ slug: 'sosuri-banat', cuiBase: 1677402, company: 'Sosuri Banat SRL', county: 'Timiș', countyCode: 'TM', hub: 'Timișoara', verdictLevel: 'ok', verdict: 'Linia ta se potrivește', priority: 'A', source: 'webinar / martie', preference: 'demo', phone: '0700 000 103', ago: 12 * DAY, stage: 'offer', contactedAt: iso(12 * DAY - 25 * MIN), done: { call: iso(12 * DAY - 25 * MIN), casestudy: iso(10 * DAY) }, answers: { weight: 10, rate: 6.8, perPallet: 54, shifts: 3, handle: 'da' } }),
+    mk({ slug: 'vopsele-arges', cuiBase: 5120339, company: 'Vopsele Argeș SRL', county: 'Argeș', countyCode: 'AG', hub: 'Dragomirești-Deal', verdictLevel: 'no', verdict: 'În afara domeniului testat', priority: 'C', source: 'google / galeti', preference: 'call', phone: '', role: 'Inginer de proces sau mentenanță', ago: 6 * DAY, stage: 'contacted', contactedAt: iso(6 * DAY - 3 * HOUR), answers: { weight: 22, rate: 9.5, perPallet: 36, shifts: 3, handle: 'nu' } }),
+    mk({ slug: 'dulciuri-ardeal', cuiBase: 6043285, company: 'Dulciuri Ardeal SRL', county: 'Sibiu', countyCode: 'SB', hub: 'Timișoara', verdictLevel: 'ok', verdict: 'Linia ta se potrivește', priority: 'A', source: 'linkedin / lansare-2027', preference: 'visit', phone: '0700 000 104', ago: 40 * DAY, stage: 'won', contactedAt: iso(40 * DAY - 50 * MIN), done: { call: iso(40 * DAY - 50 * MIN), casestudy: iso(38 * DAY), next: iso(34 * DAY) }, notes: [{ at: iso(9 * DAY), text: 'Comandă semnată: 2 celule, livrare estimată în 4 luni.' }], answers: { weight: 13, rate: 7, perPallet: 44, shifts: 3, handle: 'da' } }),
   ];
 }

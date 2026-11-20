@@ -53,29 +53,30 @@ export default function Impact({ answers, options, onOptions, onCells, onBack, o
         </div>
       </fieldset>
 
-      <div className="versus" role="table" aria-label="Acum comparat cu celula UR20">
+      <h2>Timp</h2>
+      <div className="versus" role="table" aria-label="Timp de muncă acum comparat cu celula UR20">
         <div role="row" className="versus-head">
           <span role="columnheader" />
           <span role="columnheader">Acum</span>
           <span role="columnheader">Cu UR20</span>
         </div>
         <div role="row">
-          <span role="rowheader">Ore de muncă pe schimb la paletizare</span>
-          <b role="cell">{fmt(r.hoursBefore)}</b>
+          <span role="rowheader">Minute de muncă pentru un palet</span>
+          <b role="cell">{fmt(r.personMinPerPalletBefore)}</b>
           <b role="cell" className="better">
-            {fmt(r.hoursAfter)}
+            {fmt(r.personMinPerPalletAfter)}
+          </b>
+        </div>
+        <div role="row">
+          <span role="rowheader">Ore de muncă pe zi la paletizare</span>
+          <b role="cell">{fmt(r.hoursPerDayBefore, 0)}</b>
+          <b role="cell" className="better">
+            {fmt(r.hoursPerDayAfter)}
           </b>
         </div>
         <div role="row">
           <span role="rowheader">Găleți ridicate de un om pe schimb</span>
           <b role="cell">{fmt(r.liftsPerOperatorBefore, 0)}</b>
-          <b role="cell" className="better">
-            0
-          </b>
-        </div>
-        <div role="row">
-          <span role="rowheader">Tone ridicate de un om pe schimb</span>
-          <b role="cell">{fmt(r.tonnesPerOperatorBefore)}</b>
           <b role="cell" className="better">
             0
           </b>
@@ -86,12 +87,24 @@ export default function Impact({ answers, options, onOptions, onCells, onBack, o
       </p>
 
       <div className="headline-stat">
-        <b>{fmt(r.hoursFreedYear, 0)}</b>
+        <b>−{fmt(r.timeCut * 100, 0)}%</b>
         <span>
-          ore de muncă eliberate pe an, cât {fmt(r.fteFreed)} {r.fteFreed >= 1 && r.fteFreed < 2 ? 'post' : 'posturi'} cu normă întreagă,
-          pe care le puteți muta pe alte activități. Plus {fmt(r.tonnesYear, 0)} de tone pe an care nu mai sunt ridicate manual.
+          timp de muncă pentru fiecare palet. Pe an, {fmt(r.personDaysFreedYear, 0)} de zile-om eliberate, cât {fmt(r.fteFreed)}{' '}
+          {r.fteFreed >= 1 && r.fteFreed < 2 ? 'post' : 'posturi'} cu normă întreagă mutate pe alte activități, și{' '}
+          {fmt(r.tonnesYear, 0)} de tone care nu mai sunt ridicate manual.
         </span>
       </div>
+
+      <dl className="time-facts">
+        <div>
+          <dt>{r.capacityMargin >= 0 ? `+${fmt(r.capacityMargin * 100, 0)}%` : 'insuficient'}</dt>
+          <dd>{r.capacityMargin >= 0 ? 'cât poate crește ritmul liniei până devine robotul limita' : 'celulele alese nu țin pasul cu linia'}</dd>
+        </div>
+        <div>
+          <dt>≈ {r.deliveryMonths} luni</dt>
+          <dd>de la comandă până la celula în funcțiune</dd>
+        </div>
+      </dl>
 
       <h2>Câte celule UR20</h2>
       <div className="seg">
@@ -109,13 +122,13 @@ export default function Impact({ answers, options, onOptions, onCells, onBack, o
           : `Rezervă de ${fmt(r.capacityMargin * 100, 0)}% față de linie.`}
       </p>
 
-      <h2>Cât costă și cât recuperați</h2>
+      <h2>Bani</h2>
       <dl className="money">
         <div className="money-main">
           <dt>Investiție orientativă</dt>
           <dd>{eur(r.investment)}</dd>
           <p>
-            {r.cells === 1 ? 'Celula integrată' : `${r.cells} celule integrate`}, cu instalare și instruire. Preț de scenariu; oferta
+            {r.cells === 1 ? 'Celula integrată' : `${r.cells} celule integrate`}, cu instalare și instruire. Preț orientativ; oferta
             finală vine după evaluarea tehnică.
           </p>
         </div>

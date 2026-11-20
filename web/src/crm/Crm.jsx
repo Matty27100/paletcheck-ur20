@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { fmt } from '../lib/calc.js';
 import {
-  PREFERENCES,
   RESPONSE_TARGET,
   STAGES,
   ago,
@@ -42,7 +41,6 @@ function useNow() {
 
 function Stats({ leads, now }) {
   const s = stats(leads, now);
-  const sources = Object.entries(s.bySource).sort((a, b) => b[1] - a[1]);
   return (
     <section className="crm-stats" aria-label="Indicatori">
       <div>
@@ -61,20 +59,6 @@ function Stats({ leads, now }) {
         <b>{(s.byStage.evaluation || 0) + (s.byStage.offer || 0)}</b>
         <span>în evaluare sau ofertă</span>
       </div>
-      <div className="crm-funnel">
-        {STAGES.map((st) => (
-          <span key={st.id}>
-            {st.label} <b>{s.byStage[st.id] || 0}</b>
-          </span>
-        ))}
-      </div>
-      <div className="crm-sources">
-        {sources.map(([src, n]) => (
-          <span key={src}>
-            {src} <b>{n}</b>
-          </span>
-        ))}
-      </div>
     </section>
   );
 }
@@ -89,7 +73,10 @@ function LeadRow({ lead, now, active, onOpen }) {
           {lead.priority}
         </span>
         <span className="lead-main">
-          <b>{lead.company}</b>
+          <b>
+            {lead.company}
+            {lead.demo && <span className="sample-tag">exemplu</span>}
+          </b>
           <span>
             {lead.county} · {lead.hub} · {ago(lead.createdAt, now)}
           </span>
@@ -271,14 +258,14 @@ function LeadDetail({ lead, now, onChange, onClose }) {
   );
 }
 
-export default function Crm({ onSignOut }) {
+export default function Crm({ onSignOut, badge, toolbarExtra }) {
   const now = useNow();
   const [leads, setLeads] = useState(loadLeads);
   const [filter, setFilter] = useState('all');
   const [openId, setOpenId] = useState(null);
 
   useEffect(() => {
-    document.title = 'CRM cereri UR20 (demo) | Tech-Con';
+    document.title = 'Cereri UR20 | Tech-Con';
     return () => {
       document.title = 'Verificare celulă de paletizare UR20 | Tech-Con';
     };
@@ -311,32 +298,30 @@ export default function Crm({ onSignOut }) {
     <div className={`crm ${open ? 'has-detail' : ''}`}>
       <header className="crm-top">
         <div>
-          <p className="brand-inline">Tech-Con</p>
-          <h1>Cereri de evaluare UR20</h1>
-          <p className="fine">
-            Demonstrație: datele rămân în acest browser. În producție, cererile ajung pe server și exportul CSV intră în CRM-ul existent.
+          <p className="brand-inline">
+            Tech-Con {badge}
           </p>
+          <h1>Cereri de evaluare UR20</h1>
         </div>
         <nav className="crm-tools">
-          <a className="chip-btn" href="../">
-            Instrumentul
-          </a>
+          <button type="button" className="chip-btn chip-primary" disabled={!leads.length} onClick={() => downloadCsv(shown)}>
+            Export CSV
+          </button>
+          {leads.some((l) => l.demo) ? (
+            <button type="button" className="chip-btn" onClick={clearDemo}>
+              Elimină exemplele
+            </button>
+          ) : (
+            <button type="button" className="chip-btn" onClick={loadDemo}>
+              Date de exemplu
+            </button>
+          )}
           {onSignOut && (
             <button type="button" className="chip-btn" onClick={onSignOut}>
               Ieși
             </button>
           )}
-          <button type="button" className="chip-btn" onClick={loadDemo}>
-            Încarcă cereri demo
-          </button>
-          {leads.some((l) => l.demo) && (
-            <button type="button" className="chip-btn" onClick={clearDemo}>
-              Șterge cererile demo
-            </button>
-          )}
-          <button type="button" className="chip-btn chip-primary" disabled={!leads.length} onClick={() => downloadCsv(shown)}>
-            Export CSV
-          </button>
+          {toolbarExtra}
         </nav>
       </header>
 
@@ -353,10 +338,7 @@ export default function Crm({ onSignOut }) {
           </div>
           {leads.length === 0 ? (
             <div className="empty">
-              <p>Nicio cerere încă.</p>
-              <p>
-                Trimite o cerere din <a href="../">instrument</a> sau încarcă cererile demo ca să vezi pipeline-ul și follow-up-ul.
-              </p>
+              <p>Nicio cerere încă. Cererile trimise din instrument apar aici.</p>
             </div>
           ) : shown.length === 0 ? (
             <p className="empty">Nicio cerere pentru acest filtru.</p>
@@ -370,10 +352,6 @@ export default function Crm({ onSignOut }) {
         </section>
         {open && <LeadDetail key={open.cui} lead={open} now={now} onChange={change} onClose={() => setOpenId(null)} />}
       </div>
-      <p className="fine crm-foot">
-        Pașii de follow-up: confirmare automată, apel în cel mult o oră, studiu de caz în ziua 2, pasul preferat de client în ziua 5
-        ({PREFERENCES.map((p) => p.short).join(', ')}), revenire în ziua 14.
-      </p>
     </div>
   );
 }

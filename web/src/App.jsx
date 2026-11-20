@@ -9,6 +9,8 @@ import EditForm from './ui/EditForm.jsx';
 import Request from './ui/Request.jsx';
 import Impact from './ui/Impact.jsx';
 import Assistant from './ui/Assistant.jsx';
+import ThemeToggle from './ui/ThemeToggle.jsx';
+import { applyTheme, initialTheme, saveTheme } from './lib/theme.js';
 import { IMPACT_DEFAULTS, cellsNeeded } from './lib/impact.js';
 import PrintSheet from './ui/PrintSheet.jsx';
 import { EXAMPLES, Examples, Faq, Sent } from './ui/Extras.jsx';
@@ -47,6 +49,12 @@ function Tool() {
   const [answers, setAnswers] = useState(init.answers);
   const [screen, setScreen] = useState(init.screen);
   const [sent, setSent] = useState(null);
+  const [theme, setTheme] = useState(initialTheme);
+  const changeTheme = (t) => {
+    setTheme(t);
+    applyTheme(t);
+    saveTheme(t);
+  };
   const [impactOptions, setImpactOptions] = useState({ operatorsBefore: IMPACT_DEFAULTS.operatorsBefore, monthlyCostEur: IMPACT_DEFAULTS.monthlyCostEur });
   const [stats, setStats] = useState({ counts: [0, 0], status: ['filling', 'filling'], active: 0 });
   const onStats = useCallback((s) => setStats(s), []);
@@ -95,6 +103,7 @@ function Tool() {
         <Result
           answers={answers}
           assessment={assessment}
+          impactOptions={impactOptions}
           onChange={setAnswer}
           onRequest={() => go({ name: 'request' })}
           onEdit={() => go({ name: 'edit' })}
@@ -184,6 +193,7 @@ function Tool() {
               rate={answers.rate}
               perPallet={answers.perPallet}
               speed={SPEED}
+              look={theme}
               cells={answers.cells ?? cellsNeeded(answers.weight, answers.rate)}
               onStats={onStats}
             />
@@ -199,6 +209,7 @@ function Tool() {
             {swapping && <span className="pill pill-alert">schimb de palet, manual</span>}
           </div>
           <p className="note">animație ilustrativă, ×{SPEED}</p>
+          <ThemeToggle theme={theme} onChange={changeTheme} className="stage-toggle" />
           <Assistant
             answers={answers}
             assessment={assessment}

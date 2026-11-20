@@ -13,7 +13,7 @@ function useFocusRef() {
 function visitorSteps(lead) {
   const when = { confirm: 'Acum', call: 'În cel mult o oră', casestudy: 'În 2 zile', next: 'În 5 zile', checkin: 'După 2 săptămâni' };
   const what = {
-    confirm: `Confirmarea pe ${lead.email}, cu fișa de pre-evaluare.`,
+    confirm: 'Fișa de pre-evaluare, gata de descărcat mai jos.',
     call: lead.phone
       ? `Un inginer de la centrul ${lead.hub} te sună 15 minute ca să confirme datele liniei.`
       : `Un inginer de la centrul ${lead.hub} îți propune pe e-mail trei intervale pentru un apel scurt.`,
@@ -58,10 +58,6 @@ export function Sent({ lead, duplicate, answers, title, onRestart }) {
           {status}
         </p>
       )}
-      <p className="fine">În prototip nu se trimite niciun e-mail; cererea apare în zona proprietarilor (/admin), în acest browser.</p>
-      <a className="link" href="admin/">
-        Vezi cererea în zona proprietarilor (demo)
-      </a>
       <button type="button" className="link" onClick={onRestart}>
         Verifică altă linie
       </button>
@@ -85,29 +81,23 @@ export function Examples({ onPick, onBack }) {
         </button>
       </div>
       <h1 ref={heading} tabIndex={-1}>
-        Date de test
+        Exemple de linii
       </h1>
-      <p className="reason">Trei cazuri pregătite, cu date fictive.</p>
+      <p className="reason">Trei linii tipice, ca să vezi cum răspunde verificarea.</p>
       <div className="options">
         <button type="button" onClick={() => onPick('normal')}>
-          Caz normal
+          Linie potrivită
           <small>13 kg, 6,5 găleți/min, 44 pe palet, 2 schimburi</small>
         </button>
         <button type="button" onClick={() => onPick('wrong')}>
-          Date lipsă sau greșite
+          Date incomplete
           <small>Greutate „1O”, debit 0, palet necompletat</small>
         </button>
         <button type="button" onClick={() => onPick('outside')}>
-          În afara domeniului testat
+          Linie în afara domeniului
           <small>22 kg, 9,5 găleți/min, fără mâner</small>
         </button>
       </div>
-      <p className="fine">
-        Pentru formularul de cerere: CUI fictiv valid 12345674, invalid 12345675. E-mail de test: test@fabrica-demo.ro.
-      </p>
-      <a className="link" href="admin/">
-        Zona proprietarilor: CRM și follow-up (demo)
-      </a>
     </div>
   );
 }

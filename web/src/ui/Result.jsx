@@ -2,6 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import { FACTS } from '../lib/facts.js';
 import { STILL_NEEDED, fmt, testedRateFor } from '../lib/calc.js';
 import { shareResult } from '../lib/share.js';
+import { impact } from '../lib/impact.js';
+
+const eur = (n) => `${Math.round(n).toLocaleString('ro-RO')} EUR`;
+const years = (y) => (y === null ? '–' : y < 1 ? `${fmt(y * 12, 0)} luni` : `${fmt(y)} ani`);
 
 const STATUS_LABEL = { ok: 'confirmat', check: 'de verificat', no: 'în afara domeniului', unknown: 'necunoscut' };
 
@@ -54,7 +58,7 @@ function Followup({ id, answers, onChange }) {
   return null;
 }
 
-export default function Result({ answers, assessment, onChange, onRequest, onEdit, onImpact, onRestart }) {
+export default function Result({ answers, assessment, impactOptions, onChange, onRequest, onEdit, onImpact, onRestart }) {
   const { verdict, figures, criteria, bottleneck } = assessment;
   const [status, setStatus] = useState(null);
   const heading = useRef(null);
@@ -62,6 +66,7 @@ export default function Result({ answers, assessment, onChange, onRequest, onEdi
 
   const tested = testedRateFor(answers.weight);
   const load = answers.weight + FACTS.assumptions.gripperKg;
+  const imp = impact(answers, { ...impactOptions, cells: answers.cells ?? undefined });
   const cta = verdict.level === 'no' ? 'Discută varianta cu un inginer' : 'Solicită evaluare tehnică';
 
   return (
@@ -91,9 +96,28 @@ export default function Result({ answers, assessment, onChange, onRequest, onEdi
 
       <p className={`bottleneck ${bottleneck.robotIsLimit ? 'is-limit' : ''}`}>{bottleneck.text}</p>
 
+      <section className="price" aria-label="Investiție estimată">
+        <p className="price-label">Investiție estimată</p>
+        <p className="price-value">{eur(imp.investment)}</p>
+        <p className="price-note">
+          {imp.cells === 1 ? 'O celulă UR20 integrată' : `${imp.cells} celule UR20 integrate`}, cu instalare și instruire. Preț
+          orientativ; oferta finală vine după evaluarea tehnică.
+        </p>
+        <dl>
+          <div>
+            <dt>{years(imp.paybackYears)}</dt>
+            <dd>se recuperează din timpul de muncă economisit</dd>
+          </div>
+          <div>
+            <dt>{eur(imp.perMonthOverHorizon)}</dt>
+            <dd>pe lună, împărțit pe {imp.horizonYears} ani</dd>
+          </div>
+        </dl>
+      </section>
+
       <button type="button" className="impact-link" onClick={onImpact}>
-        <b>Cât economisești față de acum</b>
-        <span>Ore de muncă, cost, investiție și câte celule UR20 îți trebuie</span>
+        <b>Cât timp și cât economisești față de acum</b>
+        <span>Minute de muncă pe palet, ore pe zi, costuri și câte celule îți trebuie</span>
       </button>
 
       <div className="details">

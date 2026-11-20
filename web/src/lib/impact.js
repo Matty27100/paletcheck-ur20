@@ -40,6 +40,11 @@ export function impact(line, opts = {}) {
   const costAfterYear = hoursAfter * yearShifts * hourlyCost;
   const savingYear = costBeforeYear - costAfterYear;
 
+  // Time view: operator minutes behind each pallet, hours per day, days per year.
+  const minutesPerPallet = perPallet / rate;
+  const personMinPerPalletBefore = o.operatorsBefore * minutesPerPallet;
+  const personMinPerPalletAfter = Math.min(personMinPerPalletBefore, o.swapMinutesPerPallet);
+
   const investment = cells * PRICE_PER_CELL;
   const bucketsHorizon = liftsPerShift * yearShifts * o.horizonYears;
 
@@ -55,6 +60,14 @@ export function impact(line, opts = {}) {
     hoursAfter,
     hoursFreedYear,
     fteFreed,
+    minutesPerPallet,
+    personMinPerPalletBefore,
+    personMinPerPalletAfter,
+    timeCut: 1 - personMinPerPalletAfter / personMinPerPalletBefore,
+    hoursPerDayBefore: hoursBefore * shifts,
+    hoursPerDayAfter: hoursAfter * shifts,
+    personDaysFreedYear: hoursFreedYear / shiftHours,
+    deliveryMonths: FACTS.reference.deliveryMonths,
     costBeforeYear,
     costAfterYear,
     savingYear,

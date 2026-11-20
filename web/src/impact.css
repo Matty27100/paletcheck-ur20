@@ -172,3 +172,75 @@
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
+
+.time-facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 0 0 6px;
+}
+
+.time-facts dt {
+  font-size: 22px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.time-facts dd {
+  margin: 2px 0 0;
+  font-size: 13px;
+  line-height: 1.3;
+  color: var(--muted);
+}
+
+/* Result: estimated price, shown with the verdict */
+.price {
+  margin: 0 0 14px;
+  padding: 14px 16px;
+  border: 1.5px solid var(--blue-light);
+  border-radius: 16px;
+}
+
+.price p {
+  margin: 0;
+}
+
+.price-label {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.price-value {
+  font-size: 32px;
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.price-note {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.price dl {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 12px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--blue-light);
+}
+
+.price dt {
+  font-size: 19px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.price dd {
+  margin: 2px 0 0;
+  font-size: 13px;
+  line-height: 1.3;
+  color: var(--muted);
+}

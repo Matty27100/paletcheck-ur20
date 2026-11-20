@@ -1,62 +1,89 @@
 import { useEffect, useRef, useState } from 'react';
 import Crm from '../crm/Crm.jsx';
+import ThemeToggle from '../ui/ThemeToggle.jsx';
+import { applyTheme, initialTheme, saveTheme } from '../lib/theme.js';
 
-// Owners' area. Proof of concept: the jury enters without a password. In production this
-// screen is a real sign-in (owner accounts, server-side session) and requests come from a
-// server database that only signed-in owners can read; here they stay in this browser.
+// Owners' area. The sign-in form is real UI, but this environment runs with password
+// bypass on: any attempt explains that and lets the person in. In production the form
+// talks to an auth server and requests come from a database only owners can read.
 const KEY = 'paletcheck.admin.session';
 
 const read = () => {
   try {
-    return sessionStorage.getItem(KEY) === 'demo';
+    return sessionStorage.getItem(KEY) === 'bypass';
   } catch {
     return false;
   }
 };
 const write = (on) => {
   try {
-    if (on) sessionStorage.setItem(KEY, 'demo');
+    if (on) sessionStorage.setItem(KEY, 'bypass');
     else sessionStorage.removeItem(KEY);
   } catch {
     /* storage blocked: the session lasts until the page closes */
   }
 };
 
-function Gate({ onEnter }) {
+function SignIn({ onEnter, toggle }) {
   const heading = useRef(null);
+  const [notice, setNotice] = useState(false);
+  const continueBtn = useRef(null);
   useEffect(() => heading.current?.focus({ preventScroll: true }), []);
+  useEffect(() => {
+    if (notice) continueBtn.current?.focus();
+  }, [notice]);
+
   return (
     <main className="gate">
       <section className="gate-card" aria-labelledby="gate-title">
+        {toggle}
         <p className="brand-inline">Tech-Con</p>
         <h1 id="gate-title" ref={heading} tabIndex={-1}>
           Zona proprietarilor
         </h1>
-        <p className="reason">Cererile de evaluare, etapele de vânzare și pașii de follow-up pentru celulele UR20.</p>
+        <p className="reason">Cererile de evaluare, etapele de vânzare și follow-up-ul pentru celulele UR20.</p>
 
-        <form className="gate-form" aria-describedby="gate-note" onSubmit={(e) => e.preventDefault()}>
+        <form
+          className="gate-form"
+          noValidate
+          onSubmit={(e) => {
+            e.preventDefault();
+            setNotice(true);
+          }}
+        >
           <div className="field">
             <label htmlFor="gate-email">E-mail</label>
-            <input id="gate-email" type="email" autoComplete="username" disabled placeholder="proprietar@tech-con.ro" />
+            <input id="gate-email" type="email" autoComplete="username" />
           </div>
           <div className="field">
             <label htmlFor="gate-pass">Parolă</label>
-            <input id="gate-pass" type="password" autoComplete="current-password" disabled />
+            <input id="gate-pass" type="password" autoComplete="current-password" />
           </div>
-          <button type="submit" className="primary" disabled>
+          <button type="submit" className="primary">
             Autentificare
           </button>
         </form>
-        <p id="gate-note" className="gate-note">
-          În versiunea finală intră doar conturile de proprietar, iar cererile stau pe server. Prototipul nu are conturi,
-          așa că autentificarea e dezactivată.
-        </p>
 
-        <button type="button" className="primary gate-demo" onClick={onEnter}>
-          Intră ca juriu (demo, fără parolă)
-        </button>
+        {notice && (
+          <div className="access-alert" role="alert">
+            <p className="access-title">Acces securizat · ocolire parolă activă</p>
+            <p>
+              Zona proprietarilor cere autentificare. Pe acest mediu de prezentare verificarea parolei este dezactivată, așa că
+              intri fără ea.
+            </p>
+            <div className="access-actions">
+              <button ref={continueBtn} type="button" className="chip-btn chip-primary" onClick={onEnter}>
+                Continuă
+              </button>
+              <button type="button" className="chip-btn" onClick={() => setNotice(false)}>
+                Anulează
+              </button>
+            </div>
+          </div>
+        )}
+
         <p className="fine">
-          Vezi cererile trimise din instrument în acest browser sau încarcă cereri demo. <a href="../">Înapoi la instrument</a>
+          <a href="../">Înapoi la verificarea liniei</a>
         </p>
       </section>
     </main>
@@ -65,9 +92,16 @@ function Gate({ onEnter }) {
 
 export default function AdminApp() {
   const [inside, setInside] = useState(read);
+  const [theme, setTheme] = useState(initialTheme);
+  const changeTheme = (t) => {
+    setTheme(t);
+    applyTheme(t);
+    saveTheme(t);
+  };
   if (!inside)
     return (
-      <Gate
+      <SignIn
+        toggle={<ThemeToggle theme={theme} onChange={changeTheme} className="gate-toggle" />}
         onEnter={() => {
           write(true);
           setInside(true);
@@ -75,16 +109,17 @@ export default function AdminApp() {
       />
     );
   return (
-    <>
-      <p className="demo-banner" role="note">
-        Mod demonstrativ pentru juriu: fără autentificare, datele rămân în acest browser.
-      </p>
-      <Crm
-        onSignOut={() => {
-          write(false);
-          setInside(false);
-        }}
-      />
-    </>
+    <Crm
+      toolbarExtra={<ThemeToggle theme={theme} onChange={changeTheme} />}
+      badge={
+        <span className="bypass-badge" title="Verificarea parolei este dezactivată pe acest mediu">
+          ocolire parolă activă
+        </span>
+      }
+      onSignOut={() => {
+        write(false);
+        setInside(false);
+      }}
+    />
   );
 }
