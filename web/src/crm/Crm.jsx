@@ -258,9 +258,34 @@ function LeadDetail({ lead, now, onChange, onClose }) {
   );
 }
 
+// Sample requests are on by default and refreshed on every open, so their timings stay
+// realistic; real requests are never touched. Removing them is remembered.
+const SAMPLES_OFF = 'paletcheck.samples.off';
+const samplesOff = () => {
+  try {
+    return localStorage.getItem(SAMPLES_OFF) === '1';
+  } catch {
+    return false;
+  }
+};
+const setSamplesOff = (off) => {
+  try {
+    if (off) localStorage.setItem(SAMPLES_OFF, '1');
+    else localStorage.removeItem(SAMPLES_OFF);
+  } catch {
+    /* storage blocked */
+  }
+};
+function initialLeads() {
+  const real = loadLeads().filter((l) => !l.demo);
+  const next = samplesOff() ? real : [...real, ...demoLeads()];
+  saveLeads(next);
+  return next;
+}
+
 export default function Crm({ onSignOut, badge, toolbarExtra }) {
   const now = useNow();
-  const [leads, setLeads] = useState(loadLeads);
+  const [leads, setLeads] = useState(initialLeads);
   const [filter, setFilter] = useState('all');
   const [openId, setOpenId] = useState(null);
 
@@ -286,12 +311,14 @@ export default function Crm({ onSignOut, badge, toolbarExtra }) {
     const next = [...mine, ...demoLeads()];
     saveLeads(next);
     setLeads(next);
+    setSamplesOff(false);
   };
   const clearDemo = () => {
     const next = leads.filter((l) => !l.demo);
     saveLeads(next);
     setLeads(next);
     setOpenId(null);
+    setSamplesOff(true);
   };
 
   return (

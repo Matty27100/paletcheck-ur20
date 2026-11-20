@@ -53,11 +53,11 @@ function SignIn({ onEnter, toggle }) {
         >
           <div className="field">
             <label htmlFor="gate-email">E-mail</label>
-            <input id="gate-email" type="email" autoComplete="username" />
+            <input id="gate-email" type="email" autoComplete="username" defaultValue="proprietar@tech-con.ro" />
           </div>
           <div className="field">
             <label htmlFor="gate-pass">Parolă</label>
-            <input id="gate-pass" type="password" autoComplete="current-password" />
+            <input id="gate-pass" type="password" autoComplete="current-password" defaultValue="parola-demo" />
           </div>
           <button type="submit" className="primary">
             Autentificare
