@@ -73,6 +73,7 @@ export default function Request({ answers, assessment, onBack, onSent }) {
         handle: answers.handle,
         separators: answers.separators,
         network: answers.network || '',
+        cells: answers.cells,
       },
       source: trafficSource(),
       consentAt: consent ? new Date().toISOString() : null,

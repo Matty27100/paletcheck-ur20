@@ -7,6 +7,9 @@ import Checking from './ui/Checking.jsx';
 import Result from './ui/Result.jsx';
 import EditForm from './ui/EditForm.jsx';
 import Request from './ui/Request.jsx';
+import Impact from './ui/Impact.jsx';
+import Assistant from './ui/Assistant.jsx';
+import { IMPACT_DEFAULTS, cellsNeeded } from './lib/impact.js';
 import PrintSheet from './ui/PrintSheet.jsx';
 import { EXAMPLES, Examples, Faq, Sent } from './ui/Extras.jsx';
 
@@ -37,6 +40,7 @@ const DEFAULTS = {
   separators: null,
   network: null,
   county: null,
+  cells: null, // null = as many as the line needs
 };
 
 function initialState() {
@@ -63,6 +67,7 @@ function Tool() {
   const [answers, setAnswers] = useState(init.answers);
   const [screen, setScreen] = useState(init.screen);
   const [sent, setSent] = useState(null);
+  const [impactOptions, setImpactOptions] = useState({ operatorsBefore: IMPACT_DEFAULTS.operatorsBefore, monthlyCostEur: IMPACT_DEFAULTS.monthlyCostEur });
   const [stats, setStats] = useState({ counts: [0, 0], status: ['filling', 'filling'], active: 0 });
   const onStats = useCallback((s) => setStats(s), []);
 
@@ -113,7 +118,20 @@ function Tool() {
           onChange={setAnswer}
           onRequest={() => go({ name: 'request' })}
           onEdit={() => go({ name: 'edit' })}
+          onImpact={() => go({ name: 'impact' })}
           onRestart={restart}
+        />
+      );
+      break;
+    case 'impact':
+      body = (
+        <Impact
+          answers={answers}
+          options={impactOptions}
+          onOptions={(o) => setImpactOptions((x) => ({ ...x, ...o }))}
+          onCells={(n) => setAnswer('cells', n)}
+          onBack={() => window.history.back()}
+          onRequest={() => go({ name: 'request' })}
         />
       );
       break;
@@ -186,6 +204,7 @@ function Tool() {
               rate={answers.rate}
               perPallet={answers.perPallet}
               speed={SPEED}
+              cells={answers.cells ?? cellsNeeded(answers.weight, answers.rate)}
               onStats={onStats}
             />
           </Suspense>
@@ -200,6 +219,14 @@ function Tool() {
             {swapping && <span className="pill pill-alert">schimb de palet, manual</span>}
           </div>
           <p className="note">animație ilustrativă, ×{SPEED}</p>
+          <Assistant
+            answers={answers}
+            assessment={assessment}
+            onApply={(values) => {
+              setAnswers((a) => ({ ...a, ...values, cells: null }));
+              go({ name: 'checking' });
+            }}
+          />
         </section>
         <section className="card">{body}</section>
       </main>

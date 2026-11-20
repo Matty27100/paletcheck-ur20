@@ -1,0 +1,174 @@
+/* Result: entry to the comparison */
+.impact-link {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  margin: 0 0 8px;
+  padding: 14px 44px 14px 16px;
+  border: 1.5px solid var(--blue);
+  border-radius: 16px;
+  background: var(--mist) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M6 3l5 5-5 5' fill='none' stroke='%231226AA' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") right 16px center / 16px no-repeat;
+  text-align: left;
+}
+
+.impact-link b {
+  font-size: 17px;
+  color: var(--blue);
+}
+
+.impact-link span {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* Comparison */
+.versus {
+  margin: 4px 0 6px;
+  font-size: 15px;
+}
+
+.versus > div {
+  display: grid;
+  grid-template-columns: 1fr 64px 72px;
+  gap: 10px;
+  align-items: baseline;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--blue-light);
+}
+
+.versus-head span {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  text-align: right;
+}
+
+.versus b {
+  font-size: 20px;
+  font-weight: 700;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.better {
+  color: var(--green);
+}
+
+.headline-stat {
+  display: grid;
+  gap: 4px;
+  margin: 18px 0 22px;
+  padding: 16px;
+  border-radius: 16px;
+  background: var(--blue);
+  color: var(--white);
+}
+
+.headline-stat b {
+  font-size: 44px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.headline-stat span {
+  font-size: 15px;
+  color: #d0deed;
+}
+
+.impact h2 {
+  margin-top: 22px;
+}
+
+.impact .seg button {
+  font-size: 14px;
+}
+
+.capacity {
+  margin: 10px 0 0;
+  font-size: 14px;
+  color: var(--green);
+}
+
+.capacity.is-short {
+  color: var(--red);
+}
+
+.money {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 12px;
+  margin: 0 0 16px;
+}
+
+.money > div {
+  min-width: 0;
+}
+
+.money-main {
+  grid-column: 1 / -1;
+  padding-bottom: 12px;
+  border-bottom: 1.5px solid var(--blue-light);
+}
+
+.money dt {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.money dd {
+  margin: 2px 0 0;
+  font-size: 22px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.money-main dd {
+  font-size: 34px;
+  letter-spacing: -0.02em;
+}
+
+.money-main p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.mini-stepper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0;
+  border-block: 1px solid var(--blue-light);
+  font-size: 14px;
+}
+
+.mini-stepper div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mini-stepper button {
+  width: 40px;
+  height: 40px;
+  border: 1.5px solid var(--blue-light);
+  border-radius: 50%;
+  background: var(--white);
+  font-size: 20px;
+  color: var(--blue);
+}
+
+.mini-stepper button:disabled {
+  opacity: 0.35;
+}
+
+.mini-stepper output {
+  min-width: 82px;
+  text-align: center;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}

@@ -14,7 +14,8 @@ const LIFT = 0.3;
 const PALLET_X = 0.95;
 const PALLET_Z = 0.2;
 const SWAP_AFTER = 40; // simulated seconds a full pallet waits for the operator
-const SLIDE = 2.6; // metres a pallet travels while it is swapped
+const SLIDE = 2.2; // metres a full pallet travels forward, into the aisle, when it is swapped
+export const CELL_SPACING = 3.6; // metres between neighbouring cells
 const SIDES = [-1, 1];
 const CAMERA_TARGET = [0, 0.75, -0.6];
 const HALF_PI = Math.PI / 2;
@@ -101,7 +102,8 @@ function Conveyor({ mat }) {
   );
 }
 
-export default function Cell({ weight, rate, perPallet, speed, frozen, drag, onStats }) {
+export default function Cell({ weight, rate, perPallet, speed, frozen, drag, onStats, index = 0, count = 1 }) {
+  const env = index === 0; // the first cell also draws the hall, the lights and drives the camera
   const pattern = useMemo(() => palletPattern(weight, perPallet), [weight, perPallet]);
   const { bucket } = pattern;
   const slotCount = pattern.slots.length;
@@ -161,7 +163,7 @@ export default function Cell({ weight, rate, perPallet, speed, frozen, drag, onS
 
   const report = () => {
     const s = sim.current;
-    if (s && onStats) {
+    if (s && onStats && env) {
       onStats({ counts: s.pallets.map((p) => p.count), status: s.pallets.map((p) => p.status), active: s.active });
     }
   };
@@ -193,7 +195,7 @@ export default function Cell({ weight, rate, perPallet, speed, frozen, drag, onS
     // Slow device: after two seconds of frames, drop shadows and resolution once.
     const ql = quality.current;
     // Frames slower than 10 fps mean a hidden or throttled tab, not a slow device: skip them.
-    if (!ql.done && !frozen && delta < 0.1 && document.visibilityState === 'visible') {
+    if (env && !ql.done && !frozen && delta < 0.1 && document.visibilityState === 'visible') {
       ql.frames += 1;
       ql.time += delta;
       if (ql.frames >= 120) {
@@ -273,9 +275,9 @@ export default function Cell({ weight, rate, perPallet, speed, frozen, drag, onS
     const slotWorld = (pi, si) => {
       const slot = pattern.slots[si];
       return {
-        x: SIDES[pi] * (PALLET_X + slot.u + s.pallets[pi].slide * SLIDE),
+        x: SIDES[pi] * (PALLET_X + slot.u),
         y: slot.y,
-        z: PALLET_Z + slot.z,
+        z: PALLET_Z + slot.z + s.pallets[pi].slide * SLIDE,
       };
     };
 
@@ -296,7 +298,7 @@ export default function Cell({ weight, rate, perPallet, speed, frozen, drag, onS
 
     // Pallets
     palletRefs.forEach((ref, i) => {
-      if (ref.current) ref.current.position.x = SIDES[i] * (PALLET_X + s.pallets[i].slide * SLIDE);
+      if (ref.current) ref.current.position.z = PALLET_Z + s.pallets[i].slide * SLIDE;
     });
 
     // Buckets: placed, queued on the belt, and the one in the gripper
@@ -335,21 +337,24 @@ export default function Cell({ weight, rate, perPallet, speed, frozen, drag, onS
     // Camera light: reads the next bucket's handle while it waits upstream of the pick point.
     if (beam.current) beam.current.opacity = 0.05 + 0.22 * (s.cycle ? 1 - smooth(0, 0.22, s.phase) : 0.4);
 
+    if (changed) report();
+    if (!env) return;
+
     // Camera: slow sway around a 3/4 view, plus whatever the visitor dragged.
     const { camera, size, clock } = state;
+    const cx = ((count - 1) * CELL_SPACING) / 2;
+    const target = [CAMERA_TARGET[0] + cx, CAMERA_TARGET[1], CAMERA_TARGET[2]];
     const aspect = size.width / size.height;
     // Far enough back that both pallets fit the width, whatever the stage's shape.
-    const radius = Math.max(7, 9.6 / aspect);
+    const radius = Math.max(7 + (count - 1) * 2.4, (9.6 + (count - 1) * 4.6) / aspect);
     const azimuth = 0.62 + (drag?.current?.az ?? 0) + (frozen ? 0 : Math.sin(clock.elapsedTime * 0.25) * 0.16);
     const elevation = 0.3;
     camera.position.set(
-      CAMERA_TARGET[0] + Math.sin(azimuth) * Math.cos(elevation) * radius,
-      CAMERA_TARGET[1] + Math.sin(elevation) * radius,
-      CAMERA_TARGET[2] + Math.cos(azimuth) * Math.cos(elevation) * radius,
+      target[0] + Math.sin(azimuth) * Math.cos(elevation) * radius,
+      target[1] + Math.sin(elevation) * radius,
+      target[2] + Math.cos(azimuth) * Math.cos(elevation) * radius,
     );
-    camera.lookAt(...CAMERA_TARGET);
-
-    if (changed) report();
+    camera.lookAt(...target);
   });
 
   const { L1, L2 } = ARM;
@@ -357,9 +362,11 @@ export default function Cell({ weight, rate, perPallet, speed, frozen, drag, onS
 
   return (
     <>
+      {env && (
+        <>
       <color attach="background" args={['#D6DADE']} />
-      <fog attach="fog" args={['#D6DADE', 9, 23]} />
-      <Factory />
+      <fog attach="fog" args={['#D6DADE', 9 + (count - 1) * 2, 23 + (count - 1) * 4]} />
+      <Factory count={count} />
       <hemisphereLight args={['#ffffff', '#b4bcc6', 1.25]} />
       <directionalLight
         position={[3.5, 6, 4]}
@@ -369,20 +376,24 @@ export default function Cell({ weight, rate, perPallet, speed, frozen, drag, onS
         shadow-bias={-0.0004}
         shadow-normalBias={0.03}
       >
-        <orthographicCamera attach="shadow-camera" args={[-4.5, 4.5, 4.5, -4.5, 0.5, 20]} />
+        <orthographicCamera attach="shadow-camera" args={[-4.5, 4.5 + (count - 1) * CELL_SPACING, 4.5, -4.5, 0.5, 20]} />
       </directionalLight>
       <directionalLight position={[-4, 3, -2]} intensity={0.35} />
 
       <mesh material={mat.floor} rotation={[-HALF_PI, 0, 0]}>
         <planeGeometry args={[60, 60]} />
       </mesh>
+        </>
+      )}
+
+      <group position={[index * CELL_SPACING, 0, 0]}>
 
       {/* Floor tape around the two pallet positions, and the area scanners */}
       {SIDES.map((side) => (
         <TapeRect key={side} material={mat.tape} cx={side * PALLET_X} cz={PALLET_Z} w={1.04} l={1.46} />
       ))}
-      {[-PALLET_X, 0, PALLET_X].map((x) => (
-        <mesh key={x} material={mat.scanner} position={[x, 0.065, 1.12]}>
+      {[-1.62, 0, 1.62].map((x) => (
+        <mesh key={x} material={mat.scanner} position={[x, 0.065, 1.0]}>
           <boxGeometry args={[0.12, 0.13, 0.1]} />
         </mesh>
       ))}
@@ -500,6 +511,7 @@ export default function Cell({ weight, rate, perPallet, speed, frozen, drag, onS
             </group>
           </group>
         </group>
+      </group>
       </group>
     </>
   );

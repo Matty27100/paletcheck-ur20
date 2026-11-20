@@ -1,0 +1,16 @@
+{
+  "name": "paletcheck-assistant",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/worker.test.mjs",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.11.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.165.0"
+  }
+}

@@ -54,7 +54,7 @@ function Followup({ id, answers, onChange }) {
   return null;
 }
 
-export default function Result({ answers, assessment, onChange, onRequest, onEdit, onRestart }) {
+export default function Result({ answers, assessment, onChange, onRequest, onEdit, onImpact, onRestart }) {
   const { verdict, figures, criteria, bottleneck } = assessment;
   const [status, setStatus] = useState(null);
   const heading = useRef(null);
@@ -90,6 +90,11 @@ export default function Result({ answers, assessment, onChange, onRequest, onEdi
       </dl>
 
       <p className={`bottleneck ${bottleneck.robotIsLimit ? 'is-limit' : ''}`}>{bottleneck.text}</p>
+
+      <button type="button" className="impact-link" onClick={onImpact}>
+        <b>Cât economisești față de acum</b>
+        <span>Ore de muncă, cost, investiție și câte celule UR20 îți trebuie</span>
+      </button>
 
       <div className="details">
         <details>

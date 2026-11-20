@@ -1,0 +1,11 @@
+name = "paletcheck-assistant"
+main = "src/worker.js"
+compatibility_date = "2026-10-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+# Sites allowed to call the assistant (comma-separated).
+ALLOWED_ORIGINS = "https://matty27100.github.io,http://localhost:5173"
+
+# The API key is a secret, never committed:
+#   npx wrangler secret put ANTHROPIC_API_KEY

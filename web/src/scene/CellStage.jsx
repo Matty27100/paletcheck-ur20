@@ -5,7 +5,7 @@ import Cell from './Cell.jsx';
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 
 // The 3D cell. Sideways drags rotate the view; vertical swipes still scroll the page.
-export default function CellStage({ weight, rate, perPallet, speed, onStats }) {
+export default function CellStage({ weight, rate, perPallet, speed, onStats, cells = 1 }) {
   const wrap = useRef(null);
   const drag = useRef({ on: false, x: 0, az: 0 });
   const [visible, setVisible] = useState(true);
@@ -58,15 +58,20 @@ export default function CellStage({ weight, rate, perPallet, speed, onStats }) {
         gl={{ antialias: true, powerPreference: 'high-performance' }}
         fallback={<p className="cell-fallback">Animația 3D nu este disponibilă pe acest dispozitiv.</p>}
       >
-        <Cell
-          weight={weight}
-          rate={rate}
-          perPallet={perPallet}
-          speed={speed}
-          frozen={reduced}
-          drag={drag}
-          onStats={onStats}
-        />
+        {Array.from({ length: cells }, (_, i) => (
+          <Cell
+            key={i}
+            index={i}
+            count={cells}
+            weight={weight}
+            rate={rate / cells}
+            perPallet={perPallet}
+            speed={speed}
+            frozen={reduced}
+            drag={drag}
+            onStats={onStats}
+          />
+        ))}
       </Canvas>
     </div>
   );

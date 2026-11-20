@@ -66,7 +66,7 @@ function rackRow({ bays, bayW, uStart, place, seed, parts }) {
   }
 }
 
-export default function Factory() {
+export default function Factory({ count = 1 }) {
   const mat = useMemo(
     () => ({
       panel: new THREE.MeshStandardMaterial({ color: '#E3E6E9', roughness: 0.9 }),
@@ -87,6 +87,7 @@ export default function Factory() {
   );
 
   const parts = useMemo(() => {
+    const aisleX = 3.25 + (count - 1) * 3.6; // walkway to the right of the last cell
     const p = { panels: [], plinths: [], ribs: [], glass: [], columns: [], guards: [], uprights: [], beams: [], pallets: [], wrapped: [], cartons: [], aisle: [], walkway: [] };
     const backLen = RIGHT_X - LEFT_X;
     const leftLen = FRONT_Z - BACK_Z;
@@ -131,12 +132,12 @@ export default function Factory() {
     for (let i = 0; i < 7; i++) p.pallets.push([-2.55, 0.08 + i * 0.152, 1.35, 0.8, 0.144, 1.2]);
 
     // Floor: a green pedestrian walkway with yellow edge lines.
-    p.walkway.push([3.25, 0.002, -1, 1.4, 0.004, 14]);
-    p.walkway.push([-3.1, 0.002, 3.25, 12.6, 0.004, 1.4]);
-    for (const x of [2.55, 3.95]) p.aisle.push([x, 0.005, -1, 0.08, 0.004, 14]);
-    for (const z of [2.55, 3.95]) p.aisle.push([-3.1, 0.005, z, 12.6, 0.004, 0.08]);
+    p.walkway.push([aisleX, 0.002, -1, 1.4, 0.004, 14]);
+    p.walkway.push([-3.1 + (count - 1) * 1.8, 0.002, 3.25, 12.6 + (count - 1) * 3.6, 0.004, 1.4]);
+    for (const x of [aisleX - 0.7, aisleX + 0.7]) p.aisle.push([x, 0.005, -1, 0.08, 0.004, 14]);
+    for (const z of [2.55, 3.95]) p.aisle.push([-3.1 + (count - 1) * 1.8, 0.005, z, 12.6 + (count - 1) * 3.6, 0.004, 0.08]);
     return p;
-  }, []);
+  }, [count]);
 
   return (
     <group>
